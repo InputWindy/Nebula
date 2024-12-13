@@ -1,4 +1,4 @@
 #pragma once
-#include <Core/CoreDefines.h>
+#include <CoreDefines.h>
 
-void NEBULA_API test();
+void CORE_API test();
