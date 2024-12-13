@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void CORE_API test()
+void test()
 {
 	std::cout << __FUNCTION__ << std::endl;
 }
