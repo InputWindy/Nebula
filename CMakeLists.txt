@@ -40,10 +40,15 @@ function(generic_template_code project_name)
     endif()
 
     message(STATUS "Finished Generic Template Code for: ${project_name}")
-
 endfunction()
 
+cmake_minimum_required(VERSION 3.17)
+project(${PROJECT_NAME})
+set(CMAKE_CXX_STANDARD ${CPP_VERSION})
+
 generic_template_code(${PROJECT_NAME})
+
+
 
 # compile source files
 file(GLOB_RECURSE PROJECT_SOURCES Project/${PROJECT_NAME}/*.hpp)
@@ -72,6 +77,7 @@ target_sources(${PROJECT_NAME} PUBLIC
 
 set(NEBULA_MODULES
     Core
+    Render
 )
 
 set(CMAKE_FOLDER "CMAKE")
@@ -90,9 +96,8 @@ foreach(SUBMODULE ${NEBULA_MODULES})
         COMMENT "Copying ${SUBMODULE}.dll to the ${PROJECT_NAME} directory"
     )
 
-    
-    set_property(TARGET ${SUBMODULE} PROPERTY FOLDER "Nebula")
     set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "Project")
+    set_property(TARGET ${SUBMODULE} PROPERTY FOLDER "Nebula")
 
 endforeach()
 

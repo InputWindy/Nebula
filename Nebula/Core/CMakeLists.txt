@@ -1,7 +1,7 @@
 # property:
 #   ADDITIONAL_COMPILER_FEATURES
 #
-cmake_minimum_required(VERSION 3.0...3.17)
+cmake_minimum_required(VERSION 3.17)
 
 # module name
 project(Core)
@@ -28,4 +28,3 @@ ${CORE_HEADERS}
 target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_compile_definitions(Core PRIVATE CORE_EXPORTS)
-# target_compile_features(Core PUBLIC cxx_std_20)
