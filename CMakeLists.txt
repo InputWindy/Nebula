@@ -32,67 +32,101 @@ function(generic_template_code project_name)
             # 确保目标目录存在
             get_filename_component(OUT_DIR ${OUT_FILE_PATH} DIRECTORY)
             file(MAKE_DIRECTORY ${OUT_DIR})
-            
+
             # 生成配置文件
             configure_file(${IN_FILE} ${OUT_FILE_PATH} @ONLY)
         endforeach()
 
     endif()
+
+    message(STATUS "Finished Generic Template Code for: ${project_name}")
+
 endfunction()
 
-# common config
-cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
-project(${PROJECT_NAME})
-set(CMAKE_CXX_STANDARD ${CPP_VERSION})
+function(generic_project project_name)
+    # common config
+    project(${project_name})
+    set(CMAKE_CXX_STANDARD ${CPP_VERSION})
+
+    # compile source files
+    file(GLOB_RECURSE PROJECT_SOURCES Project/${project_name}/*.hpp Project/${project_name}/*.cpp Project/${project_name}/*.c)
+    file(GLOB_RECURSE PROJECT_HEADERS Project/${project_name}/*.h)
+    file(GLOB_RECURSE PROJECT_SHADERS
+        Project/${project_name}/*.glsl
+        Project/${project_name}/*.vert
+        Project/${project_name}/*.frag
+        Project/${project_name}/*.comp
+    )
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
+        ${PROJECT_SOURCES}
+        ${PROJECT_HEADERS}
+        ${PROJECT_SHADERS}
+    )
+
+    add_executable(${PROJECT_NAME} Project/${project_name}/main.cpp)
+
+    set_source_files_properties(${PROJECT_SHADERS} PROPERTIES HEADER_FILE_ONLY ON)
+    target_sources(${project_name} PUBLIC
+        ${PROJECT_SOURCES}
+        ${PROJECT_HEADERS}
+        ${PROJECT_SHADERS}
+    )
+
+    set_property(TARGET ${project_name} PROPERTY FOLDER "Project")
+    message(STATUS "Finished Generic Project for: ${project_name}")
+
+endfunction()
+
+function(generic_projects)
+    set(PROJECT_LIST "")
+
+    set(TARGET_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Project)
+
+    file(GLOB ALL_ENTRIES "${TARGET_DIR}/*")
+
+    foreach(ENTRY ${ALL_ENTRIES})
+        if(IS_DIRECTORY ${ENTRY})
+            get_filename_component(FOLDER_NAME ${ENTRY} NAME)
+            list(APPEND PROJECT_LIST ${FOLDER_NAME})
+        endif()
+    endforeach()
+
+    cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
+
+    foreach(PROJECT ${PROJECT_LIST})
+        generic_project(${PROJECT})
+    endforeach(PROJECT ${PROJECT_LIST})
+
+endfunction()
 
 generic_template_code(${PROJECT_NAME})
 
-# compile source files
-file(GLOB_RECURSE PROJECT_SOURCES Project/*.hpp)
-file(GLOB_RECURSE PROJECT_SOURCES Project/*.cpp)
-file(GLOB_RECURSE PROJECT_SOURCES Project/*.c)
-file(GLOB_RECURSE PROJECT_SHADERS 
-    Project/*.glsl
-    Project/*.vert
-    Project/*.frag
-    Project/*.comp
-)
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES 
-    ${PROJECT_SOURCES}
-    ${PROJECT_HEADERS}
-    ${PROJECT_SHADERS}
-)
-add_executable(${PROJECT_NAME} Project/${PROJECT_NAME}/main.cpp)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# 设置 .glsl 文件不参与编译
-set_source_files_properties(${PROJECT_SHADERS} PROPERTIES HEADER_FILE_ONLY ON)
-target_sources(${PROJECT_NAME} PUBLIC 
-    ${PROJECT_SOURCES}
-    ${PROJECT_HEADERS}
-    ${PROJECT_SHADERS}
+generic_projects()
+
+# link libs
+set(LINK_TARGETS
+	Core
 )
 
-# 添加链接模块
-#set_property(TARGET ALL_BUILD PROPERTY FOLDER "CMAKE")
-#set_property(TARGET ZERO_CHECK PROPERTY FOLDER "CMAKE")
+foreach(SUBMODULE ${LINK_TARGETS})
+    add_subdirectory(Nebula/${SUBMODULE})
 
-set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+    # add_custom_command(
+    #     TARGET ${SUBMODULE} POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    #         $<TARGET_FILE:${SUBMODULE}>
+    #         $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    #     COMMENT "Copying ${ENGINE_MODULE}.dll to the ${PROJECT_NAME} directory"
+    # )
+    set_property(TARGET ${SUBMODULE} PROPERTY FOLDER "Nebula")
+endforeach()
 
-add_subdirectory(Nebula)
-target_link_libraries(${PROJECT_NAME} PUBLIC Nebula)
-
-# 定义拷贝命令
-add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD # 在 Nebula 构建完成后执行
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:Nebula>                # 源文件路径（.dll 文件）
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>            # 目标目录（MyApp 的 .exe 目录）
-    COMMENT "Copying Nebula.dll to the executable directory"
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LINK_TARGETS})
 
 set(CMAKE_FOLDER "CMAKE")
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set_property(TARGET Nebula PROPERTY FOLDER "Nebula")
-set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "Project")
+# set_property(TARGET ${LINK_TARGETS} PROPERTY FOLDER "Nebula")
+
 
 

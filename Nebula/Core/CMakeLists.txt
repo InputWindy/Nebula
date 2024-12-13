@@ -4,7 +4,8 @@
 cmake_minimum_required(VERSION 3.0...3.17)
 
 # module name
-project(Core LANGUAGES CXX)
+project(Core)
+set(CMAKE_CXX_STANDARD ${CPP_VERSION})
 
 # collect source files
 file(GLOB_RECURSE CORE_SOURCES ./*.cpp ./*.c)
@@ -26,11 +27,5 @@ ${CORE_HEADERS}
 
 target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# cpp version 
-set(COMPILER_FEATURES 
-    cxx_std_20
-    ${ADDITIONAL_COMPILER_FEATURES}
-)
-
 target_compile_definitions(Core PRIVATE CORE_EXPORTS)
-target_compile_features(Core PUBLIC ${COMPILER_FEATURES})
+# target_compile_features(Core PUBLIC cxx_std_20)
