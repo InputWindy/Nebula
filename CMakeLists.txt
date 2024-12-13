@@ -1,5 +1,5 @@
 #project settings
-set(PROJECT_NAME Example)
+set(PROJECT_NAME Example2)
 set(CMAKE_MIN_VERSION 3.17)
 set(CPP_VERSION 20)
 
@@ -38,7 +38,6 @@ function(generic_template_code project_name)
         endforeach()
 
     endif()
-
 endfunction()
 
 # common config
@@ -49,14 +48,14 @@ set(CMAKE_CXX_STANDARD ${CPP_VERSION})
 generic_template_code(${PROJECT_NAME})
 
 # compile source files
-file(GLOB_RECURSE PROJECT_SOURCES Project/${PROJECT_NAME}/*.hpp)
-file(GLOB_RECURSE PROJECT_SOURCES Project/${PROJECT_NAME}/*.cpp)
-file(GLOB_RECURSE PROJECT_SOURCES Project/${PROJECT_NAME}/*.c)
+file(GLOB_RECURSE PROJECT_SOURCES Project/*.hpp)
+file(GLOB_RECURSE PROJECT_SOURCES Project/*.cpp)
+file(GLOB_RECURSE PROJECT_SOURCES Project/*.c)
 file(GLOB_RECURSE PROJECT_SHADERS 
-    Project/${PROJECT_NAME}/*.glsl
-    Project/${PROJECT_NAME}/*.vert
-    Project/${PROJECT_NAME}/*.frag
-    Project/${PROJECT_NAME}/*.comp
+    Project/*.glsl
+    Project/*.vert
+    Project/*.frag
+    Project/*.comp
 )
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES 
     ${PROJECT_SOURCES}
@@ -79,21 +78,21 @@ target_sources(${PROJECT_NAME} PUBLIC
 
 set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-add_subdirectory(Engine)
-target_link_libraries(${PROJECT_NAME} PUBLIC Engine)
+add_subdirectory(Nebula)
+target_link_libraries(${PROJECT_NAME} PUBLIC Nebula)
 
 # 定义拷贝命令
 add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD # 在 Engine 构建完成后执行
+    TARGET ${PROJECT_NAME} POST_BUILD # 在 Nebula 构建完成后执行
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:Engine>                # 源文件路径（.dll 文件）
+        $<TARGET_FILE:Nebula>                # 源文件路径（.dll 文件）
         $<TARGET_FILE_DIR:${PROJECT_NAME}>            # 目标目录（MyApp 的 .exe 目录）
-    COMMENT "Copying Engine.dll to the executable directory"
+    COMMENT "Copying Nebula.dll to the executable directory"
 )
 
 set(CMAKE_FOLDER "CMAKE")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set_property(TARGET Engine PROPERTY FOLDER "Engine")
+set_property(TARGET Nebula PROPERTY FOLDER "Nebula")
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "Project")
 
 
