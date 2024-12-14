@@ -48,8 +48,6 @@ set(CMAKE_CXX_STANDARD ${CPP_VERSION})
 
 generic_template_code(${PROJECT_NAME})
 
-
-
 # compile source files
 file(GLOB_RECURSE PROJECT_SOURCES Project/${PROJECT_NAME}/*.hpp)
 file(GLOB_RECURSE PROJECT_SOURCES Project/${PROJECT_NAME}/*.cpp)
@@ -80,12 +78,15 @@ set(NEBULA_MODULES
     Render
 )
 
-set(CMAKE_FOLDER "CMAKE")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+include(FetchContent)
 
 foreach(SUBMODULE ${NEBULA_MODULES})
     add_subdirectory(Nebula/${SUBMODULE})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${SUBMODULE})
+
+    message(STATUS "${SUBMODULE}")
 
     # 定义拷贝命令
     add_custom_command(
