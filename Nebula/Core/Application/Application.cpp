@@ -1,8 +1,27 @@
 #include "Application.h"
 
-#include <iostream>
+#ifdef RENDER_MODULE
+#include <RenderCore.h>
+#endif
 
-void test()
+nbl::nIApp::nIApp()
 {
-	std::cout << __FUNCTION__ << std::endl;
+	
+}
+
+nbl::nIApp::~nIApp()
+{
+}
+
+void nbl::nIApp::StartUp()
+{
+	
+}
+
+void nbl::nIApp::Run()
+{
+}
+
+void nbl::nIApp::Shutdown()
+{
 }

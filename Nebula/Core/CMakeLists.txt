@@ -1,6 +1,3 @@
-# property:
-#   ADDITIONAL_COMPILER_FEATURES
-#
 cmake_minimum_required(VERSION 3.17)
 
 # module name
@@ -25,6 +22,9 @@ ${CORE_SOURCES}
 ${CORE_HEADERS} 
 )
 
-target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${REQUIRED_INCLUDES})
 
+message(STATUS "${REQUIRED_INCLUDES}")
+
+add_compile_definitions(${REQUIRED_MOUDLE_NAME})
 target_compile_definitions(Core PRIVATE CORE_EXPORTS)

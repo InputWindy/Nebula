@@ -1,5 +1,13 @@
 #pragma once
 
+/*
+	class type:
+	
+	nI - interface class
+	nT - template class
+	n  - nebula common class
+*/
+
 #ifdef _WIN32
 	#ifdef CORE_EXPORTS
 		#define CORE_API __declspec(dllexport)

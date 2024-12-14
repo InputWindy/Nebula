@@ -3,6 +3,10 @@ set(PROJECT_NAME Example2)
 set(CMAKE_MIN_VERSION 3.17)
 set(CPP_VERSION 20)
 
+set(ADDITIONAL_REQUIRED_MODULES
+    Render
+)
+
 #=================generic project=====================#
 function(generic_template_code project_name)
     # 设置源目录和目标目录
@@ -73,14 +77,24 @@ target_sources(${PROJECT_NAME} PUBLIC
     ${PROJECT_SHADERS}
 )
 
-set(NEBULA_MODULES
-    Core
-    Render
-)
+
+
+# 添加Core模块依赖
+set(REQUIRED_MOUDLE_NAME)
+set(REQUIRED_INCLUDES)
+foreach(module ${ADDITIONAL_REQUIRED_MODULES})
+    string(TOUPPER ${module} upper_module)
+    list(APPEND REQUIRED_MOUDLE_NAME ${upper_module}_MODULE)
+    list(APPEND REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/Nebula/${module})
+endforeach()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 include(FetchContent)
+
+set(NEBULA_MODULES
+    Core
+    ${ADDITIONAL_REQUIRED_MODULES}
+)
 
 foreach(SUBMODULE ${NEBULA_MODULES})
     add_subdirectory(Nebula/${SUBMODULE})
@@ -99,7 +113,6 @@ foreach(SUBMODULE ${NEBULA_MODULES})
 
     set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "Project")
     set_property(TARGET ${SUBMODULE} PROPERTY FOLDER "Nebula")
-
 endforeach()
 
 

@@ -35,8 +35,12 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/glfw/glfw.git
   GIT_TAG master # 指定使用的分支、标签或提交
 )
-
-FetchContent_MakeAvailable(glfw)
+# 检查是否已经拉取
+FetchContent_GetProperties(glfw)
+if (NOT glfw_POPULATED)
+    # 如果还未拉取，则进行拉取
+    FetchContent_MakeAvailable(glfw)
+endif()
 set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
 set_property(TARGET uninstall PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
 set_property(TARGET update_mappings PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
