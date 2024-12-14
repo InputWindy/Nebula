@@ -28,7 +28,7 @@ ${RENDER_HEADERS}
 target_compile_definitions(Render PRIVATE RENDER_EXPORTS)
 
 set(TARGET_LINKS)
-set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
+set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${REQUIRED_INCLUDES})
 
 FetchContent_Declare(
   glfw
@@ -65,3 +65,4 @@ target_link_libraries(Render PUBLIC
 target_include_directories(Render PUBLIC 
 	${TARGET_INCLUDES}
 )
+

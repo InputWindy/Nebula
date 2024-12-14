@@ -77,17 +77,6 @@ target_sources(${PROJECT_NAME} PUBLIC
     ${PROJECT_SHADERS}
 )
 
-
-
-# 添加Core模块依赖
-set(REQUIRED_MOUDLE_NAME)
-set(REQUIRED_INCLUDES)
-foreach(module ${ADDITIONAL_REQUIRED_MODULES})
-    string(TOUPPER ${module} upper_module)
-    list(APPEND REQUIRED_MOUDLE_NAME ${upper_module}_MODULE)
-    list(APPEND REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/Nebula/${module})
-endforeach()
-
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 include(FetchContent)
 
@@ -95,6 +84,15 @@ set(NEBULA_MODULES
     Core
     ${ADDITIONAL_REQUIRED_MODULES}
 )
+
+# 添加Core模块依赖
+set(REQUIRED_MOUDLE_NAME)
+set(REQUIRED_INCLUDES)
+foreach(module ${NEBULA_MODULES})
+    string(TOUPPER ${module} upper_module)
+    list(APPEND REQUIRED_MOUDLE_NAME ${upper_module}_MODULE)
+    list(APPEND REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/Nebula/${module})
+endforeach()
 
 foreach(SUBMODULE ${NEBULA_MODULES})
     add_subdirectory(Nebula/${SUBMODULE})

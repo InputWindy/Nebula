@@ -1,9 +1,15 @@
 #include "RenderCore.h"
 #include <iostream>
 
-#include <GLFW/glfw3.h>
-
-void rendertest()
+namespace nbl
 {
-	std::cout << __FUNCTION__ << std::endl;
+	
+	template<> 
+	__declspec(dllexport) nRenderModule& nModuleManager::LoadModule < nRenderModule >()
+	{
+		static nRenderModule msRenderModule;
+		return msRenderModule;
+	};
 }
+
+

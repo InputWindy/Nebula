@@ -1,6 +1,15 @@
 #pragma once
-#include "CoreDefines.h"
+#include "RenderModuleDefines.h"
+#include <Module/ModuleManager.h>
 
+namespace nbl
+{
+	class RENDER_API nRenderModule: public nIModule
+	{
+	public:
+		nRenderModule() {}
+		~nRenderModule() {}
+	};
 
-
-void RENDER_API rendertest();
+	extern template nRenderModule& nModuleManager::LoadModule<nRenderModule>();
+}
