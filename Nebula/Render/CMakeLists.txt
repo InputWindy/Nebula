@@ -37,45 +37,16 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(glfw)
-set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty")
-
-
-# if(NOT TARGET glad)
-#   set(glad_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}ThirParty/glad)
-#   add_library(
-#     glad
-#     ${glad_SOURCE_DIR}/src/glad.c
-#     ${glad_SOURCE_DIR}/include/glad/glad.h
-#     ${glad_SOURCE_DIR}/include/KHR/khrplatform.h
-#   )
-#   target_include_directories(glad PUBLIC ${glad_SOURCE_DIR}/include)
-#   set_target_properties(glad PROPERTIES FOLDER ${third_party_folder}/glad)
-
-#   list(APPEND TARGET_LINKS glad)
-#   list(APPEND TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/ThirParty/glad/include)
-#   set_property(TARGET glad PROPERTY FOLDER "Nebula/ThirdParty")
-# endif()
-
-# if(NOT TARGET glfw)
-#   option(GLFW_BUILD_EXAMPLES "" OFF)
-#   option(GLFW_BUILD_TESTS "" OFF)
-#   option(GLFW_BUILD_DOCS "" OFF)
-#   option(GLFW_INSTALL "" OFF)
-#   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ThirParty/glfw)
-#   set_target_properties(glfw PROPERTIES FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/ThirParty/glfw)
-#   set_target_properties(update_mappings PROPERTIES FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/ThirParty/glfw)
-
-#   list(APPEND TARGET_LINKS glfw)
-#   list(APPEND TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/ThirParty/glfw/include)
-#   list(APPEND TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/ThirParty/glfw/deps)
-#   set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty")
-# endif()
+set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
+set_property(TARGET uninstall PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
+set_property(TARGET update_mappings PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
+target_include_directories(Render PUBLIC
+  $<TARGET_PROPERTY:glfw,INTERFACE_INCLUDE_DIRECTORIES>
+)
 
 if(NOT TARGET Vulkan)
-    # ���Ӱ�����·��
     include_directories(${Vulkan_INCLUDE_DIRS})
 
-    # ���Ұ�
     find_package(Vulkan REQUIRED FATAL_ERROR)
 
     list(APPEND TARGET_LINKS ${Vulkan_LIBRARIES})
