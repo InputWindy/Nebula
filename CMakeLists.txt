@@ -5,10 +5,6 @@ set(CPP_VERSION 20)
 
 set(ADDITIONAL_REQUIRED_MODULES
     NewPlugins
-    NewPlugins1
-    NewPlugins2
-    Geometry
-    Physics
     Render
 )
 
