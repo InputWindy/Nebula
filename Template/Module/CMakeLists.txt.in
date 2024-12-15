@@ -1,0 +1,43 @@
+# property:
+#   ADDITIONAL_COMPILER_FEATURES
+#
+cmake_minimum_required(VERSION 3.17)
+
+# module name
+project(@MODULE_NAME@)
+set(CMAKE_CXX_STANDARD ${CPP_VERSION})
+
+# collect source files
+file(GLOB_RECURSE @UPPER_MODULE_NAME@_SOURCES ./*.cpp ./*.c)
+file(GLOB_RECURSE @UPPER_MODULE_NAME@_HEADERS ./*.h ./*.hpp)
+file(GLOB_RECURSE @UPPER_MODULE_NAME@_SHADERS ./*.glsl)
+
+# visual studio solution file tree
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES 
+${@UPPER_MODULE_NAME@_SOURCES} 
+${@UPPER_MODULE_NAME@_HEADERS} 
+${@UPPER_MODULE_NAME@_SHADERS} 
+)
+
+# add compile files
+add_library(@MODULE_NAME@ SHARED
+${@UPPER_MODULE_NAME@_SOURCES} 
+${@UPPER_MODULE_NAME@_HEADERS} 
+)
+
+target_compile_definitions(@MODULE_NAME@ PRIVATE @UPPER_MODULE_NAME@_EXPORTS)
+
+set(TARGET_LINKS Core)
+set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
+
+
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(@MODULE_NAME@ PUBLIC 
+	${TARGET_LINKS}
+)
+
+target_include_directories(@MODULE_NAME@ PUBLIC 
+	${TARGET_INCLUDES}
+)
+

@@ -1,0 +1,20 @@
+#include "@MODULE_NAME@Core.h"
+#include <iostream>
+
+namespace nbl
+{
+	IMPL_MODULE(@UPPER_MODULE_NAME@_API,n@MODULE_NAME@Module)
+	
+	bool n@MODULE_NAME@Module::StartupModule()
+	{
+		std::cout << __FUNCTION__ << std::endl;
+		return true;
+	}
+	bool n@MODULE_NAME@Module::ShutdownModule()
+	{
+		std::cout << __FUNCTION__ << std::endl;
+		return true;
+	}
+}
+
+

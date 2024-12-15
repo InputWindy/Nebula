@@ -8,7 +8,6 @@ namespace nbl
 	{
 		GENERATED_MODULE(nRenderModule)
 
-		friend class nModuleManager;
 	protected:
 		nRenderModule() {}
 	public:

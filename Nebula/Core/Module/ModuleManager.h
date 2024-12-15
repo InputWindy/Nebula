@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #define GENERATED_MODULE(Type)\
+friend class nModuleManager;\
 public:\
 static inline std::string GetModuleName() { return #Type; }\
 protected:\
@@ -35,8 +36,8 @@ namespace nbl
 {
 	class CORE_API nIModule
 	{
-		friend class nModuleManager;
 		GENERATED_MODULE(nIModule)
+	
 	protected:
 		nIModule() {}
 	public:

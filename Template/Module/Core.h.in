@@ -1,0 +1,17 @@
+#pragma once
+#include "@MODULE_NAME@ModuleDefines.h"
+#include <Module/ModuleManager.h>
+
+namespace nbl
+{
+	class @UPPER_MODULE_NAME@_API n@MODULE_NAME@Module: public nIModule
+	{
+		GENERATED_MODULE(n@MODULE_NAME@Module)
+
+	protected:
+		n@MODULE_NAME@Module() {}
+	public:
+		~n@MODULE_NAME@Module() {}
+
+	};
+}
