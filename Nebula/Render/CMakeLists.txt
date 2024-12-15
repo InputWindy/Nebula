@@ -27,20 +27,23 @@ ${RENDER_HEADERS}
 
 target_compile_definitions(Render PRIVATE RENDER_EXPORTS)
 
-set(TARGET_LINKS)
-set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${REQUIRED_INCLUDES})
+set(TARGET_LINKS Core)
+set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 
+# 添加glfw模块
 FetchContent_Declare(
   glfw
   GIT_REPOSITORY https://github.com/glfw/glfw.git
-  GIT_TAG master # 指定使用的分支、标签或提交
+  GIT_TAG master
 )
-# 检查是否已经拉取
+
 FetchContent_GetProperties(glfw)
 if (NOT glfw_POPULATED)
-    # 如果还未拉取，则进行拉取
     FetchContent_MakeAvailable(glfw)
+else()
+    message(STATUS "MyLibrary is already fetched.")
 endif()
+
 set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
 set_property(TARGET uninstall PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
 set_property(TARGET update_mappings PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
@@ -48,6 +51,7 @@ target_include_directories(Render PUBLIC
   $<TARGET_PROPERTY:glfw,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
+# 添加Vk模块
 if(NOT TARGET Vulkan)
     include_directories(${Vulkan_INCLUDE_DIRS})
 
@@ -56,8 +60,11 @@ if(NOT TARGET Vulkan)
     list(APPEND TARGET_LINKS ${Vulkan_LIBRARIES})
     list(APPEND TARGET_INCLUDES ${Vulkan_INCLUDE_DIRS})
 
+    message(STATUS "Vulkan_LIBRARIES: ${Vulkan_LIBRARIES}")
+
 endif()
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(Render PUBLIC 
 	${TARGET_LINKS}
 )

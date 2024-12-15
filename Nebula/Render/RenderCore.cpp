@@ -3,13 +3,16 @@
 
 namespace nbl
 {
-	
-	template<> 
-	__declspec(dllexport) nRenderModule& nModuleManager::LoadModule < nRenderModule >()
+	template<>
+	nRenderModule& nModuleManager::LoadModule<nRenderModule>()
 	{
 		static nRenderModule msRenderModule;
 		return msRenderModule;
 	};
+	void nRenderModule::UnitTest()
+	{
+		std::cout << __FUNCDNAME__;
+	}
 }
 
 

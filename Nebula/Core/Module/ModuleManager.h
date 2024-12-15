@@ -24,10 +24,8 @@ namespace nbl
 	{
 	public:
 		template<ValidModule T>
-		CORE_API T& LoadModule();
-
+		T& LoadModule();
 	};
-
 }
 
 

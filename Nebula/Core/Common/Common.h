@@ -5,6 +5,14 @@
 
 namespace nbl
 {
+#define IMPL_SINGLETON(Type)\
+template<>\
+Type& nSingleton<Type>::Get()\
+{\
+	static Type instance;\
+	return instance;\
+};
+
 	template<typename T>
 	class CORE_API nSingleton
 	{
@@ -12,11 +20,8 @@ namespace nbl
 		nSingleton() {}
 
 	public:
-		static T& Get() noexcept(std::is_nothrow_constructible<T>::value)
-		{
-			static T instance;
-			return instance;
-		}
+		static T& Get() noexcept(std::is_nothrow_constructible<T>::value);
+
 		virtual ~nSingleton() noexcept = default;
 		nSingleton(const nSingleton&) = delete;
 		nSingleton& operator=(const nSingleton&) = delete;
