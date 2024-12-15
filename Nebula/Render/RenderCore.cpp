@@ -3,15 +3,17 @@
 
 namespace nbl
 {
-	template<>
-	nRenderModule& nModuleManager::LoadModule<nRenderModule>()
+	IMPL_MODULE(RENDER_API,nRenderModule)
+	
+	bool nRenderModule::StartupModule()
 	{
-		static nRenderModule msRenderModule;
-		return msRenderModule;
-	};
-	void nRenderModule::UnitTest()
+		std::cout << __FUNCTION__ << std::endl;
+		return true;
+	}
+	bool nRenderModule::ShutdownModule()
 	{
-		std::cout << __FUNCDNAME__;
+		std::cout << __FUNCTION__ << std::endl;
+		return true;
 	}
 }
 

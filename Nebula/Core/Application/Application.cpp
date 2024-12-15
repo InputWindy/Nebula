@@ -24,4 +24,5 @@ void nbl::nIApp::Run()
 
 void nbl::nIApp::Shutdown()
 {
+	nbl::nModuleManager::Get().ShutdownModules();
 }

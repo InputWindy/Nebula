@@ -6,17 +6,13 @@ namespace nbl
 {
 	class RENDER_API nRenderModule: public nIModule
 	{
+		GENERATED_MODULE(nRenderModule)
+
 		friend class nModuleManager;
-	
 	protected:
 		nRenderModule() {}
 	public:
 		~nRenderModule() {}
 
-		void UnitTest();
-
 	};
-
-	extern template RENDER_API nRenderModule& nModuleManager::LoadModule<nRenderModule>();
-
 }

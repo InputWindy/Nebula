@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreDefines.h"
+#include "Module/ModuleManager.h"
 
 #include <type_traits>
 
