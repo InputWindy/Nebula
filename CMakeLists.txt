@@ -4,9 +4,10 @@ set(CMAKE_MIN_VERSION 3.17)
 set(CPP_VERSION 20)
 
 set(ADDITIONAL_REQUIRED_MODULES
-    NewPlugins
     Render
 )
+
+set(ENABLE_UI True)
 
 #=================generic project=====================#
 function(generic_template_code project_name)
