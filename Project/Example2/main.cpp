@@ -1,7 +1,6 @@
 #include <Application/Application.h>
 
-#include <imgui.h>
-#include <glad/glad.h>
+#include <PlatformCore.h>
 
 struct Example2App :public nbl::nIApp
 {
@@ -11,34 +10,28 @@ public:
 		ParseCmdline(argc, argv);
 	}
 
-	void StartUp() override final
-	{
-		nIApp::StartUp();
-
-		/*
-			TODO: your initialization .
-		*/
-		{
-
-		}
-	};
-
 	void Run() override final
 	{
+		auto& PlatformModule = nbl::nModuleManager::Get().LoadModule<nbl::nPlatformModule>();
 
+		nbl::nPlatformWindowCreateInfo Info;
+		Info.bHideWindow = false;
+		Info.bResizable = true;
+		Info.H = 600;
+		Info.W = 800;
+		Info.Title = "Example2";
+		Info.UserData = this;
+
+		if (PlatformModule.CreatePlatformWindow(Info, nbl::nEnumWindowBackend::Glfw))
+		{
+			nbl::nPlatformWindow* Window = PlatformModule.GetPlatformWindowChecked();
+			while (!Window->ShouldClose())
+			{
+				Window->PollEvent();
+			}
+		};
 	}
 
-	void Shutdown() override final
-	{
-		/*
-			TODO: your shutdown .
-		*/
-		{
-
-		}
-
-		nIApp::Shutdown();
-	};
 
 
 protected:

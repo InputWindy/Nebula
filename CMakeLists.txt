@@ -4,10 +4,12 @@ set(CMAKE_MIN_VERSION 3.17)
 set(CPP_VERSION 20)
 
 set(ADDITIONAL_REQUIRED_MODULES
+    Platform
     Render
 )
 
 set(ENABLE_UI True)
+set(ENABLE_WINDOW True)
 
 #=================generic project=====================#
 function(generic_template_code project_name)
@@ -141,6 +143,12 @@ foreach(SUBMODULE ${NEBULA_MODULES})
 
     add_subdirectory(Nebula/${SUBMODULE})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${SUBMODULE})
+    target_include_directories(${PROJECT_NAME} PUBLIC Nebula/${SUBMODULE})
+
+    set(UPPER_MODULE_NAME)
+    string(TOUPPER ${SUBMODULE} UPPER_MODULE_NAME)
+    add_compile_definitions(${UPPER_MODULE_NAME})
+
     message(STATUS "${SUBMODULE}")
 
     # 定义拷贝命令

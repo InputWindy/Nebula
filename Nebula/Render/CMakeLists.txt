@@ -30,27 +30,6 @@ target_compile_definitions(Render PRIVATE RENDER_EXPORTS)
 set(TARGET_LINKS Core)
 set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 
-# 添加glfw模块
-if(NOT TARGET Vulkan)
-    FetchContent_Declare(
-      glfw
-      GIT_REPOSITORY https://github.com/glfw/glfw.git
-      GIT_TAG master
-    )
-
-    FetchContent_GetProperties(glfw)
-    if (NOT glfw_POPULATED)
-        FetchContent_MakeAvailable(glfw)
-    else()
-        message(STATUS "MyLibrary is already fetched.")
-    endif()
-
-    set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
-
-    list(APPEND TARGET_LINKS glfw)
-    list(APPEND TARGET_INCLUDES $<TARGET_PROPERTY:glfw,INTERFACE_INCLUDE_DIRECTORIES>)
-endif()
-
 
 # 添加Vk模块
 if(NOT TARGET Vulkan)
