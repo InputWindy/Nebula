@@ -137,6 +137,18 @@ set(NEBULA_MODULES
     ${ADDITIONAL_REQUIRED_MODULES}
 )
 
+set(REQUIRED_INCLUDES)
+set(REQUIRED_MODULES)
+
+foreach(SUBMODULE ${ADDITIONAL_REQUIRED_MODULES})
+    set(UPPER_MODULE_NAME)
+    string(TOUPPER ${SUBMODULE} UPPER_MODULE_NAME)
+    list(APPEND REQUIRED_MODULES ${UPPER_MODULE_NAME}_MODULE)
+    list(APPEND REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/Nebula/${SUBMODULE})
+endforeach()
+
+add_compile_definitions(${REQUIRED_MODULES})
+
 foreach(SUBMODULE ${NEBULA_MODULES})
 
     generic_module(${SUBMODULE})
@@ -144,10 +156,6 @@ foreach(SUBMODULE ${NEBULA_MODULES})
     add_subdirectory(Nebula/${SUBMODULE})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${SUBMODULE})
     target_include_directories(${PROJECT_NAME} PUBLIC Nebula/${SUBMODULE})
-
-    set(UPPER_MODULE_NAME)
-    string(TOUPPER ${SUBMODULE} UPPER_MODULE_NAME)
-    add_compile_definitions(${UPPER_MODULE_NAME})
 
     message(STATUS "${SUBMODULE}")
 

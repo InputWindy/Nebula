@@ -1,6 +1,4 @@
-#include <Application/Application.h>
-
-#include <PlatformCore.h>
+#include <Nebula.h>
 
 struct Example2App :public nbl::nIApp
 {

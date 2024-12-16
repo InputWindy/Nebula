@@ -3,6 +3,11 @@
 
 namespace nbl
 {
+
+
+
+	
+
 	IMPL_MODULE(CORE_API, nIModule)
 
 	bool nIModule::StartupModule()

@@ -5,6 +5,7 @@
 	
 	nI - interface class
 	nT - template class
+	nE - enum class
 	n  - nebula common class
 */
 
