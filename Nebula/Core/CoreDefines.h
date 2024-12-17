@@ -8,7 +8,12 @@
 	nE - enum class
 	n  - nebula common class
 */
+/*
+	模块内头文件引用使用""
+	模块外头文件引用使用<>
 
+	以防出现跨模块同名文件引用错误导致报错
+*/
 #ifdef _WIN32
 	#ifdef CORE_EXPORTS
 		#define CORE_API __declspec(dllexport)

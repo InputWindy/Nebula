@@ -1,44 +1,51 @@
+/*
+	模块内头文件引用使用""
+	模块外头文件引用使用<>
+
+	以防出现跨模块同名文件引用错误导致报错
+*/
 #pragma once
 #include "PlatformModuleDefines.h"
-#include <Module/ModuleManager.h>
 
+#include "Module/ModuleManager.h"
 #include "Window/PlatformWindow.h"
 
 namespace nbl
 {
-	class PLATFORM_API nPlatformModule: public nIModule
+	enum nPlatformErrorCode:unsigned int
+	{
+		
+	};
+
+	class PLATFORM_API nPlatformModule final: public nIModule
 	{
 		GENERATED_MODULE(nPlatformModule)
 
-	protected:
-		nPlatformModule() {}
 	public:
-		virtual ~nPlatformModule() {}
-
 		/// <summary>
 		/// create native window
 		/// </summary>
 		/// <param name="NewInfo"></param>
 		/// <returns>valid</returns>
-		virtual bool  CreatePlatformWindow(const nPlatformWindowCreateInfo&, nEnumWindowBackend);
+		bool CreatePlatformWindow(const nPlatformWindowCreateInfo&, nEnumWindowBackend);
 
 		/// <summary>
 		/// check validation
 		/// </summary>
 		/// <returns></returns>
-		virtual bool  IsValidPlatformWindow()const;
+		bool IsValidPlatformWindow()const;
 
 		/// <summary>
 		/// get valid window
 		/// </summary>
 		/// <returns>p window</returns>
-		virtual nPlatformWindow* GetPlatformWindowChecked();
+		nPlatformWindow* GetPlatformWindowChecked();
 
 		/// <summary>
 		/// get raw ptr
 		/// </summary>
 		/// <returns>p window(can be null)</returns>
-		virtual nPlatformWindow* GetPlatformWindow();
+		nPlatformWindow* GetPlatformWindow();
 
 	private:
 		std::unique_ptr<nPlatformWindow> PlatformWindow;

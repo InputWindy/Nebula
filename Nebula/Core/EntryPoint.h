@@ -1,5 +1,5 @@
 #pragma once
-#include <Application/Application.h>
+#include "Application/Application.h"
 
 #include <exception>
 #include <stdexcept>
@@ -22,5 +22,5 @@ int main(int argc, char* argv[])
 		std::exit(EXIT_FAILURE);
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }

@@ -19,12 +19,13 @@ namespace nbl
 		virtual std::string			GetWindowTitle()	const override final;
 		virtual nEnumWindowBackend  GetType()			const override final;
 
+		virtual void* GetProcAddressCallbackFunc()const override final;
 
 		virtual bool ShouldClose()const override final;
 		virtual void PollEvent()  const override final;
 	private:
 		const nPlatformWindowCreateInfo& Info;
-		//GLFWwindow* Handle = nullptr;
+		void* Handle = nullptr;
 	};
 
 }

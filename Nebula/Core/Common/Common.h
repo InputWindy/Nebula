@@ -5,6 +5,16 @@
 
 namespace nbl
 {
+	typedef unsigned int nResult;
+	enum nEnumResult_: unsigned int
+	{
+		Success = 0,
+		Fail = 1
+	};
+}
+
+namespace nbl
+{
 #define IMPL_SINGLETON(Type)\
 template<>\
 Type& nSingleton<Type>::Get()\

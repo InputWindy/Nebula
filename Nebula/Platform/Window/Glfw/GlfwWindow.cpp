@@ -9,11 +9,16 @@ nbl::nGlfwWindow::nGlfwWindow(const nPlatformWindowCreateInfo& NewInfo)
 {
 #ifdef ENABLE_WINDOW
 	glfwInit();
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	glfwDefaultWindowHints();
+	 
 	glfwWindowHint(GLFW_RESIZABLE, NewInfo.bResizable ? GLFW_TRUE : GLFW_FALSE);
 	glfwWindowHint(GLFW_VISIBLE, NewInfo.bHideWindow ? GLFW_FALSE : GLFW_TRUE);
 
+	if (!NewInfo.bOpenGLBackend)
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
 	Handle = glfwCreateWindow(Info.W, Info.H, Info.Title.c_str(), nullptr, nullptr);
+	glfwMakeContextCurrent((GLFWwindow*)Handle);
 #elif
 	Handle = nullptr;
 #endif
@@ -47,6 +52,11 @@ std::string nbl::nGlfwWindow::GetWindowTitle() const
 nbl::nEnumWindowBackend nbl::nGlfwWindow::GetType() const
 {
 	return nEnumWindowBackend::Glfw;
+}
+
+void* nbl::nGlfwWindow::GetProcAddressCallbackFunc() const
+{
+	return (void*)glfwGetProcAddress;
 }
 
 bool nbl::nGlfwWindow::ShouldClose() const

@@ -45,6 +45,11 @@ nbl::nEnumWindowBackend nbl::nEglWindow::GetType() const
     return nEnumWindowBackend::Egl;
 }
 
+void* nbl::nEglWindow::GetProcAddressCallbackFunc() const
+{
+    return nullptr;
+}
+
 bool nbl::nEglWindow::ShouldClose() const
 {
     return false;

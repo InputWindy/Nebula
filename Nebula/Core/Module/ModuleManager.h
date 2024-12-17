@@ -15,7 +15,11 @@ public:\
 static inline std::string GetModuleName() { return #Type; }\
 protected:\
 virtual bool StartupModule();\
-virtual bool ShutdownModule();
+virtual bool ShutdownModule();\
+protected:\
+Type() {}\
+public:\
+virtual ~Type() {}
 
 #define IMPL_MODULE(API,Type) \
 extern template API Type& nModuleManager::LoadModule<Type>();\
@@ -37,11 +41,6 @@ namespace nbl
 	class CORE_API nIModule
 	{
 		GENERATED_MODULE(nIModule)
-	
-	protected:
-		nIModule() {}
-	public:
-		virtual ~nIModule() {}
 	};
 }
 
@@ -56,7 +55,7 @@ namespace nbl
 		template<ValidModule T>
 		T& LoadModule();
 
-		bool ShutdownModules();
+		nResult ShutdownModules();
 
 	protected:
 		static inline std::map<std::string, std::unique_ptr<nIModule>> LoadedModules;

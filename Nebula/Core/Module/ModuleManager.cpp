@@ -25,12 +25,15 @@ namespace nbl
 namespace nbl
 {
 	IMPL_SINGLETON(nModuleManager)
-		bool nModuleManager::ShutdownModules()
+	nResult nModuleManager::ShutdownModules()
 	{
+		nResult Result = Success;
+
 		for (auto& Item : LoadedModules)
 		{
-			Item.second->ShutdownModule();
+			if(!Item.second->ShutdownModule())
+				Result = Fail;
 		}
-		return true;
+		return Result;
 	}
 }

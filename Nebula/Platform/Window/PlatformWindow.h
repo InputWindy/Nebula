@@ -1,6 +1,5 @@
 #pragma once
 #include "PlatformModuleDefines.h"
-#include <GLFW/glfw3.h>
 
 #include <string>
 
@@ -22,6 +21,7 @@ namespace nbl
 		void* UserData = nullptr;
 		bool  bHideWindow = false;
 		bool  bResizable  = true;
+		bool  bOpenGLBackend = false;
 	};
 
 	class PLATFORM_API nPlatformWindow
@@ -39,6 +39,8 @@ namespace nbl
 		 
 		virtual std::string			GetWindowTitle()	const = 0;
 		virtual nEnumWindowBackend  GetType()			const = 0;
+
+		virtual void* GetProcAddressCallbackFunc()const = 0;
 
 	public:
 		virtual bool ShouldClose()const = 0;

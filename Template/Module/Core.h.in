@@ -1,17 +1,19 @@
+/*
+	模块内头文件引用使用""
+	模块外头文件引用使用<>
+
+	以防出现跨模块同名文件引用错误导致报错
+*/
+
 #pragma once
+
 #include "@MODULE_NAME@ModuleDefines.h"
 #include <Module/ModuleManager.h>
 
 namespace nbl
 {
-	class @UPPER_MODULE_NAME@_API n@MODULE_NAME@Module: public nIModule
+	class @UPPER_MODULE_NAME@_API n@MODULE_NAME@Module final: public nIModule
 	{
 		GENERATED_MODULE(n@MODULE_NAME@Module)
-
-	protected:
-		n@MODULE_NAME@Module() {}
-	public:
-		~n@MODULE_NAME@Module() {}
-
 	};
 }
