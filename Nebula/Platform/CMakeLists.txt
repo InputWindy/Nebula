@@ -30,6 +30,16 @@ target_compile_definitions(Platform PRIVATE PLATFORM_EXPORTS)
 set(TARGET_LINKS Core)
 set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 
+# 添加Vk模块
+if(NOT TARGET Vulkan)
+    include_directories(${Vulkan_INCLUDE_DIRS})
+
+    find_package(Vulkan REQUIRED FATAL_ERROR)
+    list(APPEND TARGET_INCLUDES ${Vulkan_INCLUDE_DIRS})
+
+    message(STATUS "Vulkan_LIBRARIES: ${Vulkan_INCLUDE_DIRS}")
+
+endif()
 
 # 添加glfw模块
 if(NOT TARGET glfw)

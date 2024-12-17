@@ -55,7 +55,7 @@ namespace nbl
 		template<ValidModule T>
 		T& LoadModule();
 
-		nResult ShutdownModules();
+		bool ShutdownModules();
 
 	protected:
 		static inline std::map<std::string, std::unique_ptr<nIModule>> LoadedModules;

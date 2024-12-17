@@ -5,6 +5,8 @@
 #include <exception>
 #include <stdexcept>
 
+#include <PlatformCore.h>
+
 nbl::nOpenGLRHI::nOpenGLRHI()
 {
 }
@@ -18,14 +20,18 @@ nbl::nEnumRenderBackend nbl::nOpenGLRHI::GetType() const
 	return nEnumRenderBackend::OpenGL;
 }
 
-bool nbl::nOpenGLRHI::InitBackend(void* CallBack) const
+nbl::nEnumRHIInitResult nbl::nOpenGLRHI::InitBackend(nRHICreateInfo* NewInfo)
 {
-	bool ret = gladLoadGLLoader((GLADloadproc)CallBack);
-
-	if (!ret)
+	if (
+		nRHI::InitBackend(NewInfo) == nEnumRHIInitResult::Success &&
+		NewInfo->PlatformWindow&&
+		NewInfo->PlatformWindow->IsValid()
+		)
 	{
-		throw std::runtime_error("failed to load opengl,no gpu");
+		return gladLoadGLLoader((GLADloadproc)Info.PlatformWindow) ? nEnumRHIInitResult::Success : nEnumRHIInitResult::InvalidGetProcCallback;
 	}
-
-	return ret;
+	else
+	{
+		return nEnumRHIInitResult::InvalidPlatformWindow;
+	}
 }

@@ -18,12 +18,13 @@ namespace nbl
 
 	public:
 
-		bool  CreateRHI(nEnumRenderBackend);
+		bool  CreateRHI(nRHICreateInfo*);
 		bool  IsValidRHI()const;
 		nRHI* GetRHIChecked()const;
 		nRHI* GetRHI()const;
 
-		bool InitRHI(void*);
+	private:
+		bool InitRHI(nRHICreateInfo*);
 
 	private:
 		std::unique_ptr<nRHI> RenderInterface;

@@ -1,6 +1,6 @@
 #include <Nebula.h>
 
-#define VULKAN_BACKEND
+//#define VULKAN_BACKEND
 
 struct Example2App :public nbl::nIApp
 {
@@ -28,30 +28,22 @@ public:
 		Info.bOpenGLBackend = true;
 #endif
 		
-		/*uint32_t ExtensionCount;
-		vkEnumerateInstanceExtensionProperties(nullptr, &ExtensionCount, nullptr);
-
-		std::cout << "ExtensionCount:" << ExtensionCount << std::endl;*/
-
 		if (PlatformModule.CreatePlatformWindow(Info, nbl::nEnumWindowBackend::Glfw))
 		{
+			auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
+
 			nbl::nPlatformWindow* Window = PlatformModule.GetPlatformWindowChecked();
 
-			auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
+			nbl::nRHICreateInfo CreateInfo;
+			CreateInfo.PlatformWindow = Window;
 #ifdef VULKAN_BACKEND
-			if (RenderModule.CreateRHI(nbl::nEnumRenderBackend::Vulkan))
+			CreateInfo.BackendType = nbl::nEnumRenderBackend::Vulkan;
 #else
-			if (RenderModule.CreateRHI(nbl::nEnumRenderBackend::OpenGL))
+			CreateInfo.BackendType = nbl::nEnumRenderBackend::OpenGL;
 #endif
+			if (RenderModule.CreateRHI(&CreateInfo))
 			{
-				if (RenderModule.GetRHIChecked()->InitBackend(Window->GetProcAddressCallbackFunc()))
-				{
-					std::cout << "success." << std::endl;
-				}
-				else
-				{
-					std::cout << "fail." << std::endl;
-				}
+				std::cout << "ok" << std::endl;
 			}
 
 			while (!Window->ShouldClose())

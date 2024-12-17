@@ -11,7 +11,7 @@ namespace nbl
 
 		virtual nEnumRenderBackend GetType()const override final;
 
-		virtual bool InitBackend(void*)const override final;
+		virtual nEnumRHIInitResult InitBackend(nRHICreateInfo*) override final;
 
 	private:
 

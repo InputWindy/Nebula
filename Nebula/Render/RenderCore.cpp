@@ -18,18 +18,20 @@ namespace nbl
 		std::cout << __FUNCTION__ << std::endl;
 		return true;
 	}
-	bool nRenderModule::CreateRHI(nEnumRenderBackend Type)
+	bool nRenderModule::CreateRHI(nRHICreateInfo* NewInfo)
 	{
-		switch (Type)
+		switch (NewInfo->BackendType)
 		{
 		case nbl::nEnumRenderBackend::Vulkan:
 		{
 			RenderInterface = std::make_unique<nVulkanRHI>();
+			RenderInterface->InitBackend(NewInfo);
 			break;
 		}
 		case nbl::nEnumRenderBackend::OpenGL:
 		{
 			RenderInterface = std::make_unique<nOpenGLRHI>();
+			RenderInterface->InitBackend(NewInfo);
 			break;
 		}
 		default:
@@ -54,9 +56,30 @@ namespace nbl
 	{
 		return RenderInterface.get();
 	}
-	bool nRenderModule::InitRHI(void* Callback)
+	bool nRenderModule::InitRHI(nRHICreateInfo* Ptr)
 	{
-		return false;
+		bool bRet = false;
+
+		if (nRHI* RHI = GetRHIChecked())
+		{
+			switch (RHI->GetType())
+			{
+			case nbl::nEnumRenderBackend::Vulkan:
+			{
+				bRet = RHI->InitBackend(Ptr) == nEnumRHIInitResult::Success;
+				break;
+			}
+			case nbl::nEnumRenderBackend::OpenGL:
+			{
+				bRet = RHI->InitBackend(Ptr) == nEnumRHIInitResult::Success;
+				break;
+			}
+			default:
+				break;
+			}
+		}
+
+		return bRet;
 	}
 }
 
