@@ -1,5 +1,6 @@
 #include <Nebula.h>
 
+#define VULKAN_BACKEND
 
 struct Example2App :public nbl::nIApp
 {
@@ -20,20 +21,28 @@ public:
 		Info.W = 800;
 		Info.Title = "Example2";
 		Info.UserData = this;
+
+#ifdef VULKAN_BACKEND
 		Info.bOpenGLBackend = false;
+#else
+		Info.bOpenGLBackend = true;
+#endif
 		
 		/*uint32_t ExtensionCount;
 		vkEnumerateInstanceExtensionProperties(nullptr, &ExtensionCount, nullptr);
 
 		std::cout << "ExtensionCount:" << ExtensionCount << std::endl;*/
 
-
 		if (PlatformModule.CreatePlatformWindow(Info, nbl::nEnumWindowBackend::Glfw))
 		{
 			nbl::nPlatformWindow* Window = PlatformModule.GetPlatformWindowChecked();
 
 			auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
+#ifdef VULKAN_BACKEND
+			if (RenderModule.CreateRHI(nbl::nEnumRenderBackend::Vulkan))
+#else
 			if (RenderModule.CreateRHI(nbl::nEnumRenderBackend::OpenGL))
+#endif
 			{
 				if (RenderModule.GetRHIChecked()->InitBackend(Window->GetProcAddressCallbackFunc()))
 				{
@@ -59,6 +68,8 @@ protected:
 	{
 		
 	}
+private:
+
 };
 
 IMPL_APP(Example2App)
