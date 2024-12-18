@@ -50,22 +50,9 @@ namespace nbl
 		virtual void PollEvent()  const = 0;
 	};
 
-	struct PLATFORM_API nPlatformWindowAccessor :public nModulePtrAccessor<nPlatformWindow>
+	struct PLATFORM_API nPlatformWindowAccessor final:public nModulePtrAccessor<nPlatformWindow>
 	{
-	public:
-		nPlatformWindowAccessor(nPlatformWindow* InPtr = nullptr) :nModulePtrAccessor(InPtr) {}
-		nPlatformWindowAccessor(const nPlatformWindowAccessor& Other) :nModulePtrAccessor(Other.Ptr) {}
-		nPlatformWindowAccessor(nPlatformWindowAccessor&& Other) :nModulePtrAccessor(Other.Ptr) { Other.Ptr = nullptr; }
-		void operator=(const nPlatformWindowAccessor& Other)noexcept
-		{
-			Ptr = Other.Ptr;
-		}
-
-		void operator=(nPlatformWindowAccessor&& Other)noexcept
-		{
-			Ptr = Other.Ptr;
-			Other.Ptr = nullptr;
-		}
+		GENERATED_PTR_ACCESSOR(nPlatformWindowAccessor)
 	public:
 
 #ifdef PLATFORM_MODULE

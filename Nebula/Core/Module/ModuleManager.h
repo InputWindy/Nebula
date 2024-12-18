@@ -36,6 +36,15 @@ Type& nModuleManager::LoadModule<Type>()\
 	return *reinterpret_cast<Type*>(LoadedModules[Type::GetModuleName()].get());\
 };
 
+#define GENERATED_PTR_ACCESSOR(ClassType) \
+public:\
+ClassType(nPlatformWindow* InPtr = nullptr) :nModulePtrAccessor(InPtr) {}\
+ClassType(const ClassType& Other) :nModulePtrAccessor(Other.Ptr) {}\
+void operator=(const ClassType& Other)noexcept\
+{\
+	Ptr = Other.Ptr;\
+}
+
 namespace nbl
 {
 	class CORE_API nIModule

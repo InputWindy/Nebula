@@ -37,6 +37,13 @@ public:
 
 			nbl::nRHICreateInfo CreateInfo;
 			CreateInfo.PlatformWindow = Window;
+			CreateInfo.AppName = "Example2";
+			CreateInfo.AppVersion = VK_MAKE_VERSION(1, 0, 0);
+			CreateInfo.bEnableValidationLayers = true;
+			CreateInfo.EngineName = "NoEngine";
+			CreateInfo.EngineVersion = VK_MAKE_VERSION(1, 0, 0);
+			CreateInfo.VulkanVersion = VK_API_VERSION_1_0;
+
 #ifdef VULKAN_BACKEND
 			CreateInfo.BackendType = nbl::nEnumRenderBackend::Vulkan;
 #else

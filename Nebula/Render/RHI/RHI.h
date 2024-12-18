@@ -33,7 +33,7 @@ namespace nbl
 		/*
 			Ð£Ñé²ã
 		*/
-		std::vector<std::string> ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
+		std::vector<const char*> ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 
 #ifdef NDEBUG
 		bool bEnableValidationLayers = false;

@@ -8,6 +8,7 @@
 
 namespace nbl
 {
+	typedef VKAPI_ATTR VkBool32(*VkDebugCallback)(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, const VkDebugUtilsMessengerCallbackDataEXT*, void*);
 
 	class RENDER_API nVulkanRHI:public nRHI
 	{
@@ -23,8 +24,10 @@ namespace nbl
 		const auto& GetCreateInfo()			const;
 		const auto& GetAvailableLayers()	const;
 
-		bool IsSupportedLayer(const std::vector<std::string>&)const;
+		bool IsSupportedLayer(const std::vector<const char*>&)const;
 	private:
 		std::vector<VkLayerProperties> AvailableLayers;
+	private:
+		VkInstance Instance;
 	};
 }
