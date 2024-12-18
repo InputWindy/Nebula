@@ -1,6 +1,6 @@
 #include <Nebula.h>
 
-//#define VULKAN_BACKEND
+#define VULKAN_BACKEND
 
 struct Example2App :public nbl::nIApp
 {
@@ -21,6 +21,7 @@ public:
 		Info.W = 800;
 		Info.Title = "Example2";
 		Info.UserData = this;
+		Info.BackendType = nbl::nEnumWindowBackend::Glfw;
 
 #ifdef VULKAN_BACKEND
 		Info.bOpenGLBackend = false;
@@ -28,11 +29,11 @@ public:
 		Info.bOpenGLBackend = true;
 #endif
 		
-		if (PlatformModule.CreatePlatformWindow(Info, nbl::nEnumWindowBackend::Glfw))
+		if (PlatformModule.CreatePlatformWindow(Info))
 		{
 			auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
 
-			nbl::nPlatformWindow* Window = PlatformModule.GetPlatformWindowChecked();
+			nbl::nPlatformWindowAccessor Window = PlatformModule.GetPlatformWindowChecked();
 
 			nbl::nRHICreateInfo CreateInfo;
 			CreateInfo.PlatformWindow = Window;
@@ -46,9 +47,9 @@ public:
 				std::cout << "ok" << std::endl;
 			}
 
-			while (!Window->ShouldClose())
+			while (!Window.ShouldClose())
 			{
-				Window->PollEvent();
+				Window.PollEvent();
 			}
 		};
 	}

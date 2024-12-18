@@ -4,6 +4,7 @@
 #include <Common/Common.h>
 #include <vector>
 #include <string>
+#include <Window/PlatformWindow.h>
 
 namespace nbl
 {
@@ -46,7 +47,7 @@ namespace nbl
 		uint32_t EngineVersion;
 		uint32_t VulkanVersion;
 
-		nPlatformWindow* PlatformWindow;
+		nPlatformWindowAccessor PlatformWindow;
 
 		nEnumRenderBackend BackendType;
 	};

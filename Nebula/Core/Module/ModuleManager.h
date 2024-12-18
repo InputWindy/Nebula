@@ -60,6 +60,24 @@ namespace nbl
 	protected:
 		static inline std::map<std::string, std::unique_ptr<nIModule>> LoadedModules;
 	};
+
+	template<typename T>
+	class CORE_API nModulePtrAccessor
+	{
+	public:
+		nModulePtrAccessor(T* InPtr) :Ptr(InPtr) {}
+		nModulePtrAccessor(const nModulePtrAccessor& Other) :Ptr(Other.Ptr) {}
+
+		void operator=(const nModulePtrAccessor& Other)noexcept
+		{
+			Ptr = Other.Ptr;
+		}
+
+		virtual ~nModulePtrAccessor() {};
+
+	protected:
+		T* Ptr;
+	};
 }
 
 

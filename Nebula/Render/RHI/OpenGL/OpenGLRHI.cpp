@@ -24,11 +24,10 @@ nbl::nEnumRHIInitResult nbl::nOpenGLRHI::InitBackend(nRHICreateInfo* NewInfo)
 {
 	if (
 		nRHI::InitBackend(NewInfo) == nEnumRHIInitResult::Success &&
-		NewInfo->PlatformWindow&&
-		NewInfo->PlatformWindow->IsValid()
+		NewInfo->PlatformWindow.IsValid()
 		)
 	{
-		return gladLoadGLLoader((GLADloadproc)Info.PlatformWindow) ? nEnumRHIInitResult::Success : nEnumRHIInitResult::InvalidGetProcCallback;
+		return gladLoadGLLoader((GLADloadproc)Info.PlatformWindow.GetProcAddressCallbackFunc()) ? nEnumRHIInitResult::Success : nEnumRHIInitResult::InvalidGetProcCallback;
 	}
 	else
 	{

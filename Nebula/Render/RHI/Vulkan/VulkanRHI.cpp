@@ -36,9 +36,8 @@ nbl::nEnumRHIInitResult nbl::nVulkanRHI::InitBackend(nbl::nRHICreateInfo* NewInf
 		return nEnumRHIInitResult::InavailableLayers;
 
 	if (
-		!Info.PlatformWindow ||
-		!Info.PlatformWindow->IsValid() ||
-		Info.PlatformWindow->GetType() != nEnumWindowBackend::Glfw
+		!Info.PlatformWindow.IsValid() ||
+		Info.PlatformWindow.GetType() != nEnumWindowBackend::Glfw
 		)
 		return nEnumRHIInitResult::InvalidPlatformWindow;
 

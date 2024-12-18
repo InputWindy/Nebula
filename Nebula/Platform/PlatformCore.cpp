@@ -23,9 +23,9 @@ namespace nbl
 
 
 
-	bool nPlatformModule::CreatePlatformWindow(const nPlatformWindowCreateInfo& Info, nEnumWindowBackend Backend)
+	bool nPlatformModule::CreatePlatformWindow(const nPlatformWindowCreateInfo& Info)
 	{
-		switch (Backend)
+		switch (Info.BackendType)
 		{
 		case nbl::nEnumWindowBackend::Glfw:
 		{
@@ -47,7 +47,7 @@ namespace nbl
 	{
 		return PlatformWindow && PlatformWindow->IsValid();
 	}
-	nPlatformWindow* nPlatformModule::GetPlatformWindowChecked()
+	nPlatformWindowAccessor nPlatformModule::GetPlatformWindowChecked()
 	{
 		bool bValid = IsValidPlatformWindow();
 
@@ -58,9 +58,9 @@ namespace nbl
 
 		return GetPlatformWindow();
 	}
-	nPlatformWindow* nPlatformModule::GetPlatformWindow()
+	nPlatformWindowAccessor nPlatformModule::GetPlatformWindow()
 	{
-		return PlatformWindow.get();
+		return nPlatformWindowAccessor(PlatformWindow.get());
 	}
 }
 

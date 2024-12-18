@@ -7,7 +7,7 @@
 #pragma once
 #include "PlatformModuleDefines.h"
 
-#include "Module/ModuleManager.h"
+#include <Module/ModuleManager.h>
 #include "Window/PlatformWindow.h"
 
 namespace nbl
@@ -27,7 +27,7 @@ namespace nbl
 		/// </summary>
 		/// <param name="NewInfo"></param>
 		/// <returns>valid</returns>
-		bool CreatePlatformWindow(const nPlatformWindowCreateInfo&, nEnumWindowBackend);
+		bool CreatePlatformWindow(const nPlatformWindowCreateInfo&);
 
 		/// <summary>
 		/// check validation
@@ -39,13 +39,13 @@ namespace nbl
 		/// get valid window
 		/// </summary>
 		/// <returns>p window</returns>
-		nPlatformWindow* GetPlatformWindowChecked();
+		nPlatformWindowAccessor GetPlatformWindowChecked();
 
 		/// <summary>
 		/// get raw ptr
 		/// </summary>
 		/// <returns>p window(can be null)</returns>
-		nPlatformWindow* GetPlatformWindow();
+		nPlatformWindowAccessor GetPlatformWindow();
 
 	private:
 		std::unique_ptr<nPlatformWindow> PlatformWindow;
