@@ -29,5 +29,12 @@ namespace nbl
 		std::vector<VkLayerProperties> AvailableLayers;
 	private:
 		VkInstance Instance;
+		VkDebugUtilsMessengerEXT DebugMessenger;
+		VkSurfaceKHR Surface;
+
+		std::vector<VkPhysicalDevice> PhysicalDevices;
+
+		VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
+		VkDevice Device;
 	};
 }

@@ -4,7 +4,7 @@
 #include <Common/Common.h>
 #include <vector>
 #include <string>
-#include <Window/PlatformWindow.h>
+#include "Window/PlatformWindow.h"
 
 namespace nbl
 {
@@ -65,5 +65,10 @@ namespace nbl
 		virtual nEnumRenderBackend GetType()const = 0;
 	protected:
 		nRHICreateInfo Info;
+	};
+
+	struct RENDER_API nRHIAccessor final :public nModulePtrAccessor<nRHI>
+	{
+		GENERATED_PTR_ACCESSOR(nRHI)
 	};
 }

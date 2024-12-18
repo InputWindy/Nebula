@@ -4,7 +4,6 @@ set(CMAKE_MIN_VERSION 3.17)
 set(CPP_VERSION 20)
 
 set(ADDITIONAL_REQUIRED_MODULES
-    Platform
     Render
 )
 

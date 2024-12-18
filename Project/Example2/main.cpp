@@ -12,8 +12,7 @@ public:
 
 	void Run() override final
 	{
-		auto& PlatformModule = nbl::nModuleManager::Get().LoadModule<nbl::nPlatformModule>();
-
+		auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
 		nbl::nPlatformWindowCreateInfo Info;
 		Info.bHideWindow = false;
 		Info.bResizable = true;
@@ -29,11 +28,9 @@ public:
 		Info.bOpenGLBackend = true;
 #endif
 		
-		if (PlatformModule.CreatePlatformWindow(Info))
+		if (RenderModule.CreatePlatformWindow(Info))
 		{
-			auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
-
-			nbl::nPlatformWindowAccessor Window = PlatformModule.GetPlatformWindowChecked();
+			nbl::nPlatformWindowAccessor Window = RenderModule.GetPlatformWindowChecked();
 
 			nbl::nRHICreateInfo CreateInfo;
 			CreateInfo.PlatformWindow = Window;

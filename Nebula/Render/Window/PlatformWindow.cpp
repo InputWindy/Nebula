@@ -1,4 +1,5 @@
 #include "PlatformWindow.h"
+#include <GLFW/glfw3.h>
 
 nbl::nPlatformWindow::nPlatformWindow()
 {
@@ -8,12 +9,10 @@ nbl::nPlatformWindow::~nPlatformWindow()
 {
 }
 
-#ifdef PLATFORM_MODULE
 void* nbl::nPlatformWindowAccessor::GetHandle() const
 {
     return Ptr ? Ptr->GetHandle() : Ptr;
 }
-#endif
 
 
 void* nbl::nPlatformWindowAccessor::GetUserData() const

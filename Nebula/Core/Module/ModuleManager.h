@@ -38,9 +38,9 @@ Type& nModuleManager::LoadModule<Type>()\
 
 #define GENERATED_PTR_ACCESSOR(ClassType) \
 public:\
-ClassType(nPlatformWindow* InPtr = nullptr) :nModulePtrAccessor(InPtr) {}\
-ClassType(const ClassType& Other) :nModulePtrAccessor(Other.Ptr) {}\
-void operator=(const ClassType& Other)noexcept\
+ClassType##Accessor(ClassType* InPtr = nullptr) :nModulePtrAccessor(InPtr) {}\
+ClassType##Accessor(const ClassType##Accessor& Other) :nModulePtrAccessor(Other.Ptr) {}\
+void operator=(const ClassType##Accessor& Other)noexcept\
 {\
 	Ptr = Other.Ptr;\
 }

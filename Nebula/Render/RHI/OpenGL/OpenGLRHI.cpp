@@ -5,8 +5,6 @@
 #include <exception>
 #include <stdexcept>
 
-#include <PlatformCore.h>
-
 nbl::nOpenGLRHI::nOpenGLRHI()
 {
 }

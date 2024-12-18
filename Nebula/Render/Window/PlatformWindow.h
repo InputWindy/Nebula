@@ -1,5 +1,5 @@
 #pragma once
-#include "PlatformModuleDefines.h"
+#include "RenderModuleDefines.h"
 
 #include <string>
 #include <Module/ModuleManager.h>
@@ -12,7 +12,7 @@ namespace nbl
 		Egl
 	};
 
-	struct PLATFORM_API nPlatformWindowCreateInfo
+	struct RENDER_API nPlatformWindowCreateInfo
 	{
 		std::string Title;
 
@@ -27,7 +27,7 @@ namespace nbl
 		nEnumWindowBackend BackendType;
 	};
 
-	class PLATFORM_API nPlatformWindow
+	class RENDER_API nPlatformWindow
 	{
 	protected:
 		nPlatformWindow();
@@ -50,15 +50,12 @@ namespace nbl
 		virtual void PollEvent()  const = 0;
 	};
 
-	struct PLATFORM_API nPlatformWindowAccessor final:public nModulePtrAccessor<nPlatformWindow>
+	struct RENDER_API nPlatformWindowAccessor final:public nModulePtrAccessor<nPlatformWindow>
 	{
-		GENERATED_PTR_ACCESSOR(nPlatformWindowAccessor)
+		GENERATED_PTR_ACCESSOR(nPlatformWindow)
 	public:
 
-#ifdef PLATFORM_MODULE
 		void* GetHandle()  const;
-#endif
-
 		void* GetUserData()const;
 		int   GetW()	   const;
 		int   GetH()	   const;

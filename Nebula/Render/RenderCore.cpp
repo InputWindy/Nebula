@@ -3,6 +3,11 @@
 
 #include "RHI/OpenGL/OpenGLRHI.h"
 #include "RHI/Vulkan/VulkanRHI.h"
+#include "Window/Glfw/GlfwWindow.h"
+#include "Window/Egl/EglWindow.h"
+#include <GLFW/glfw3.h>
+
+#include <cassert>
 
 namespace nbl
 {
@@ -43,44 +48,57 @@ namespace nbl
 	{
 		return RenderInterface.get();
 	}
-	nRHI* nRenderModule::GetRHIChecked() const
+	nRHIAccessor nRenderModule::GetRHIChecked() const
 	{
 		if (!IsValidRHI())
 		{
 			throw std::runtime_error("invalid rhi .");
 		}
 
-		return GetRHI();
+		return nRHIAccessor(GetRHI());
 	}
-	nRHI* nRenderModule::GetRHI() const
+	nRHIAccessor nRenderModule::GetRHI() const
 	{
-		return RenderInterface.get();
+		return nRHIAccessor(RenderInterface.get());
 	}
-	bool nRenderModule::InitRHI(nRHICreateInfo* Ptr)
-	{
-		bool bRet = false;
 
-		if (nRHI* RHI = GetRHIChecked())
+	bool nRenderModule::CreatePlatformWindow(const nPlatformWindowCreateInfo& Info)
+	{
+		switch (Info.BackendType)
 		{
-			switch (RHI->GetType())
-			{
-			case nbl::nEnumRenderBackend::Vulkan:
-			{
-				bRet = RHI->InitBackend(Ptr) == nEnumRHIInitResult::Success;
-				break;
-			}
-			case nbl::nEnumRenderBackend::OpenGL:
-			{
-				bRet = RHI->InitBackend(Ptr) == nEnumRHIInitResult::Success;
-				break;
-			}
-			default:
-				break;
-			}
+		case nbl::nEnumWindowBackend::Glfw:
+		{
+			PlatformWindow = std::make_unique<nGlfwWindow>(Info);
+			break;
+		}
+		case nbl::nEnumWindowBackend::Egl:
+		{
+			PlatformWindow = std::make_unique<nEglWindow>(Info);
+			break;
+		}
+		default:
+			break;
 		}
 
-		return bRet;
+		return IsValidPlatformWindow();
+	}
+	bool nRenderModule::IsValidPlatformWindow() const
+	{
+		return PlatformWindow && PlatformWindow->IsValid();
+	}
+	nPlatformWindowAccessor nRenderModule::GetPlatformWindowChecked()
+	{
+		bool bValid = IsValidPlatformWindow();
+
+		assert(bValid, "invalid platform window .");
+
+		if (!bValid)
+			throw std::runtime_error("invalid platform window .");
+
+		return GetPlatformWindow();
+	}
+	nPlatformWindowAccessor nRenderModule::GetPlatformWindow()
+	{
+		return nPlatformWindowAccessor(PlatformWindow.get());
 	}
 }
-
-

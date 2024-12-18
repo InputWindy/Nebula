@@ -3,10 +3,11 @@
 
 #include <stdexcept>
 
-#include <PlatformCore.h>
 #include <iostream>
 
 #include "RHI/RHI.h"
+
+#include <GLFW/glfw3.h>
 
 nbl::nVulkanRHI::nVulkanRHI()
 {
@@ -76,18 +77,20 @@ nbl::nEnumRHIInitResult nbl::nVulkanRHI::InitBackend(nbl::nRHICreateInfo* NewInf
 	CreateInfo.pApplicationInfo = &AppInfo;
 
 	/*
-		vk是非常底层的协议，很多额外功能都是以拓展形式实现的，这里就是配置的是vulkan的窗口拓展（VK_KHR_swapchain）。
+		vk只提供最小功能实现，很多额外功能都是以拓展形式实现的，这里就是配置vulkan的窗口拓展（VK_KHR_swapchain）。
 		类似的拓展还有VK_KHR_ray_tracing 支持光追、VK_KHR_multiview 支持VR/AR
+
+		拓展可以配给整个Instance，也可以只配给具体的一个PhysicalDevice
 	*/
 	auto Extensions = GetRequiredExtensions(Info);
 	CreateInfo.enabledExtensionCount = static_cast<uint32_t>(Extensions.size());
 	CreateInfo.ppEnabledExtensionNames = Extensions.data();
 
 	//开启Layer。Layer相当于在Vulkan代码里嵌入代码，主要是给RenderDoc这类代码分析工具用的。
+	VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
+	
 	if (Info.bEnableValidationLayers) 
 	{
-		VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
-
 		CreateInfo.enabledLayerCount = static_cast<uint32_t>(Info.ValidationLayers.size());
 		CreateInfo.ppEnabledLayerNames = Info.ValidationLayers.data();
 
@@ -102,11 +105,34 @@ nbl::nEnumRHIInitResult nbl::nVulkanRHI::InitBackend(nbl::nRHICreateInfo* NewInf
 		CreateInfo.pNext = nullptr;
 	}
 
+	/*
+		创建VkInstance
+	*/
 	if (vkCreateInstance(&CreateInfo, nullptr, &Instance) != VK_SUCCESS) 
 	{
 		throw std::runtime_error("failed to create instance!");
 	}
+	/*
+		Debug模式下创建Debug层
+	*/
+	if (Info.bEnableValidationLayers)
+		if (PFN_vkCreateDebugUtilsMessengerEXT DebugUtilsMessengerCreator = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(Instance, "vkCreateDebugUtilsMessengerEXT"))
+		{
+			if(DebugUtilsMessengerCreator(Instance, &DebugCreateInfo, nullptr, &DebugMessenger) != VK_SUCCESS) 
+				throw std::runtime_error("failed to set up debug messenger!");
+			else
+				std::cout << "Debug Utils Created Successfully" << std::endl;
+		}
 
+	/*
+		创建Surface
+	*/
+	if (glfwCreateWindowSurface(Instance, (GLFWwindow*)Info.PlatformWindow.GetHandle(), nullptr, &Surface) != VK_SUCCESS)
+		throw std::runtime_error("failed to create window surface!");
+	else
+		std::cout << "Surface Created Successfully" << std::endl;
+	
+	
 	return nEnumRHIInitResult::Success;
 }
 
@@ -128,7 +154,7 @@ bool nbl::nVulkanRHI::IsSupportedLayer(const std::vector<const char*>& Validatio
 
 		for (const auto& LayerProperties : GetAvailableLayers()) 
 		{
-			if (LayerName == LayerProperties.layerName) 
+			if (strcmp(LayerName, LayerProperties.layerName) == 0)
 			{
 				bLayerFound = true;
 				break;
@@ -140,5 +166,5 @@ bool nbl::nVulkanRHI::IsSupportedLayer(const std::vector<const char*>& Validatio
 		
 	}
 
-	return false;
+	return true;
 }

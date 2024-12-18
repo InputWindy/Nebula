@@ -5,7 +5,7 @@ class GLFWwindow;
 
 namespace nbl
 {
-	class PLATFORM_API nGlfwWindow:public nPlatformWindow
+	class RENDER_API nGlfwWindow:public nPlatformWindow
 	{
 	public:
 		nGlfwWindow(const nPlatformWindowCreateInfo& NewInfo);

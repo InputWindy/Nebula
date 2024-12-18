@@ -27,9 +27,31 @@ ${RENDER_HEADERS}
 
 target_compile_definitions(Render PRIVATE RENDER_EXPORTS)
 
-set(TARGET_LINKS Core Platform)
-set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../Platform)
+set(TARGET_LINKS Core)
+set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 
+# ����glfwģ��
+if(NOT TARGET glfw)
+    FetchContent_Declare(
+      glfw
+      GIT_REPOSITORY https://github.com/glfw/glfw.git
+      GIT_TAG master
+    )
+
+    FetchContent_GetProperties(glfw)
+    if (NOT glfw_POPULATED)
+        FetchContent_MakeAvailable(glfw)
+    else()
+        message(STATUS "MyLibrary is already fetched.")
+    endif()
+
+    set_property(TARGET glfw PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
+    set_property(TARGET uninstall PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
+    set_property(TARGET update_mappings PROPERTY FOLDER "Nebula/ThirdParty/GLFW3")
+
+    list(APPEND TARGET_LINKS glfw)
+    list(APPEND TARGET_INCLUDES $<TARGET_PROPERTY:glfw,INTERFACE_INCLUDE_DIRECTORIES>)
+endif()
 
 # 添加Vk模块
 if(NOT TARGET Vulkan)
@@ -80,3 +102,7 @@ target_include_directories(Render PUBLIC
 	${TARGET_INCLUDES}
 )
 
+#macro
+if(ENABLE_WINDOW)
+    add_compile_definitions(ENABLE_WINDOW)
+endif()

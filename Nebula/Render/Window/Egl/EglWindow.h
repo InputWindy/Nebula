@@ -5,7 +5,7 @@
 
 namespace nbl
 {
-	class PLATFORM_API nEglWindow :public nPlatformWindow
+	class RENDER_API nEglWindow :public nPlatformWindow
 	{
 	public:
 		nEglWindow(const nPlatformWindowCreateInfo& NewInfo);
