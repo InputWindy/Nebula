@@ -10,6 +10,7 @@
 
 #include "RHI/RHI.h"
 #include "Window/PlatformWindow.h"
+#include "RHI/RHI.h"
 
 namespace nbl
 {

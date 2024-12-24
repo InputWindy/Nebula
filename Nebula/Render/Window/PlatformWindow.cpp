@@ -40,9 +40,10 @@ std::string nbl::nPlatformWindowAccessor::GetWindowTitle() const
     return Ptr?Ptr->GetWindowTitle():"";
 }
 
-nbl::nEnumWindowBackend nbl::nPlatformWindowAccessor::GetType() const
+const nbl::nPlatformWindowCreateInfo& nbl::nPlatformWindowAccessor::GetInfo() const
 {
-    return Ptr?Ptr->GetType(): nbl::nEnumWindowBackend::Glfw;
+    static nPlatformWindowCreateInfo msInfo;
+    return Ptr ? Ptr->GetInfo() : msInfo;
 }
 
 void* nbl::nPlatformWindowAccessor::GetProcAddressCallbackFunc() const

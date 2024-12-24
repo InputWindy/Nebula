@@ -1,6 +1,8 @@
 #pragma once
 #include "RenderModuleDefines.h"
 
+#include <Module/ModuleManager.h>
+
 #include <Common/Common.h>
 #include <vector>
 #include <string>
@@ -26,33 +28,39 @@ namespace nbl
 		InavailableLayers 
 	};
 
-	class nPlatformWindow;
+	class nPlatformWindowAccessor;
 
 	struct RENDER_API nRHICreateInfo
 	{
+		nRHICreateInfo() {};
+		nRHICreateInfo(const nPlatformWindowAccessor& InPlatformWindow) :PlatformWindow(InPlatformWindow){};
+
+		nPlatformWindowAccessor PlatformWindow;
+	};
+
+	struct nVulkanCreateInfo :public nRHICreateInfo
+	{
+		nVulkanCreateInfo() {};
+		nVulkanCreateInfo(const nPlatformWindowAccessor& InPlatformWindow) :nRHICreateInfo(InPlatformWindow) {};
+
 		/*
-			校验层
+			实例层
 		*/
-		std::vector<const char*> ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
+		std::vector<const char*> AppLayers = { "VK_LAYER_KHRONOS_validation" };
 
 #ifdef NDEBUG
 		bool bEnableValidationLayers = false;
 #else
 		bool bEnableValidationLayers = true;
-#endif // NDEBUG
+#endif 
 
-		std::string AppName;
-		uint32_t AppVersion;
-		std::string EngineName;
-		uint32_t EngineVersion;
-		uint32_t VulkanVersion;
+		uint32_t VulkanVersion;/* = VK_API_VERSION_1_0;*/
+	};
 
-		/*
-			这里可以
-		*/
-		nPlatformWindowAccessor PlatformWindow;
-
-		nEnumRenderBackend BackendType;
+	struct nOpenGLCreateInfo :public nRHICreateInfo
+	{
+		nOpenGLCreateInfo() {};
+		nOpenGLCreateInfo(const nPlatformWindowAccessor& InPlatformWindow) :nRHICreateInfo(InPlatformWindow) {};
 	};
 
 	class RENDER_API nRHI

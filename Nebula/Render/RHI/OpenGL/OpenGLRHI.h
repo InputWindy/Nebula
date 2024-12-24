@@ -3,6 +3,7 @@
 
 namespace nbl
 {
+
 	class RENDER_API nOpenGLRHI :public nRHI
 	{
 	public:

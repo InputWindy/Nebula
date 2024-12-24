@@ -17,15 +17,15 @@ namespace nbl
 		virtual bool  IsValid()    const override final;
 
 		virtual std::string			GetWindowTitle()	const override final;
-		virtual nEnumWindowBackend  GetType()			const override final;
 
 		virtual void* GetProcAddressCallbackFunc()const override final;
+
+		virtual const nPlatformWindowCreateInfo& GetInfo() const override final;
 
 		virtual bool ShouldClose()const override final;
 		virtual void PollEvent()  const override final;
 	private:
 		const nPlatformWindowCreateInfo& Info;
-		void* Handle = nullptr;
 	};
 
 }

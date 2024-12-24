@@ -40,14 +40,14 @@ std::string nbl::nEglWindow::GetWindowTitle() const
     return std::string();
 }
 
-nbl::nEnumWindowBackend nbl::nEglWindow::GetType() const
-{
-    return nEnumWindowBackend::Egl;
-}
-
 void* nbl::nEglWindow::GetProcAddressCallbackFunc() const
 {
     return nullptr;
+}
+
+const nbl::nPlatformWindowCreateInfo& nbl::nEglWindow::GetInfo() const
+{
+    return Info;
 }
 
 bool nbl::nEglWindow::ShouldClose() const

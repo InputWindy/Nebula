@@ -25,7 +25,7 @@ namespace nbl
 	}
 	bool nRenderModule::CreateRHI(nRHICreateInfo* NewInfo)
 	{
-		switch (NewInfo->BackendType)
+		switch (NewInfo->PlatformWindow.GetInfo().RenderBackend)
 		{
 		case nbl::nEnumRenderBackend::Vulkan:
 		{
@@ -64,22 +64,13 @@ namespace nbl
 
 	bool nRenderModule::CreatePlatformWindow(const nPlatformWindowCreateInfo& Info)
 	{
-		switch (Info.BackendType)
-		{
-		case nbl::nEnumWindowBackend::Glfw:
-		{
-			PlatformWindow = std::make_unique<nGlfwWindow>(Info);
-			break;
-		}
-		case nbl::nEnumWindowBackend::Egl:
-		{
-			PlatformWindow = std::make_unique<nEglWindow>(Info);
-			break;
-		}
-		default:
-			break;
-		}
-
+#if defined(_WIN32)
+		PlatformWindow = std::make_unique<nGlfwWindow>(Info);
+#elif defined(__linux__)
+		PlatformWindow = std::make_unique<nEglWindow>(Info);
+#elif defined(__APPLE__)
+#else
+#endif
 		return IsValidPlatformWindow();
 	}
 	bool nRenderModule::IsValidPlatformWindow() const

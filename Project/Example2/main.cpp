@@ -20,37 +20,28 @@ public:
 		Info.W = 800;
 		Info.Title = "Example2";
 		Info.UserData = this;
-		Info.BackendType = nbl::nEnumWindowBackend::Glfw;
 
 #ifdef VULKAN_BACKEND
-		Info.bOpenGLBackend = false;
+		Info.RenderBackend = nbl::nEnumRenderBackend::Vulkan;
 #else
-		Info.bOpenGLBackend = true;
+		Info.RenderBackend = nbl::nEnumRenderBackend::OpenGL;
 #endif
 		
 		if (RenderModule.CreatePlatformWindow(Info))
 		{
 			nbl::nPlatformWindowAccessor Window = RenderModule.GetPlatformWindowChecked();
 
-			nbl::nRHICreateInfo CreateInfo;
-			CreateInfo.PlatformWindow = Window;
-			CreateInfo.AppName = "Example2";
-			CreateInfo.AppVersion = VK_MAKE_VERSION(1, 0, 0);
-			CreateInfo.bEnableValidationLayers = true;
-			CreateInfo.EngineName = "NoEngine";
-			CreateInfo.EngineVersion = VK_MAKE_VERSION(1, 0, 0);
-			CreateInfo.VulkanVersion = VK_API_VERSION_1_0;
-
 #ifdef VULKAN_BACKEND
-			CreateInfo.BackendType = nbl::nEnumRenderBackend::Vulkan;
+			nbl::nVulkanCreateInfo CreateInfo(Window);
 #else
-			CreateInfo.BackendType = nbl::nEnumRenderBackend::OpenGL;
+			nbl::nRHICreateInfo CreateInfo(Window);
 #endif
+			
 			if (RenderModule.CreateRHI(&CreateInfo))
 			{
 				std::cout << "ok" << std::endl;
 			}
-
+			
 			while (!Window.ShouldClose())
 			{
 				Window.PollEvent();

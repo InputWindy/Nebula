@@ -1,38 +1,30 @@
 #include "GlfwWindow.h"
+#include "RHI/RHI.h"
 
-#ifdef ENABLE_WINDOW
-	#define GLFW_INCLUDE_VULKAN
-	#include<GLFW/glfw3.h>
-#endif
+
+#define GLFW_INCLUDE_VULKAN
+#include<GLFW/glfw3.h>
 
 nbl::nGlfwWindow::nGlfwWindow(const nPlatformWindowCreateInfo& NewInfo) 
 	:Info(NewInfo),Handle(nullptr)
 {
-#ifdef ENABLE_WINDOW
 	glfwInit();
 	glfwDefaultWindowHints();
 	 
 	glfwWindowHint(GLFW_RESIZABLE, NewInfo.bResizable ? GLFW_TRUE : GLFW_FALSE);
 	glfwWindowHint(GLFW_VISIBLE, NewInfo.bHideWindow ? GLFW_FALSE : GLFW_TRUE);
 
-	if (!NewInfo.bOpenGLBackend)
+	if (NewInfo.RenderBackend != nEnumRenderBackend::OpenGL)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	Handle = glfwCreateWindow(Info.W, Info.H, Info.Title.c_str(), nullptr, nullptr);
 	glfwMakeContextCurrent((GLFWwindow*)Handle);
-#elif
-	Handle = nullptr;
-#endif
-
 }
 
 nbl::nGlfwWindow::~nGlfwWindow()
 {
-#ifdef ENABLE_WINDOW
 	glfwDestroyWindow(Handle);
 	glfwTerminate();
-#endif
-	
 }
 
 void* nbl::nGlfwWindow::GetHandle() const
@@ -50,14 +42,14 @@ std::string nbl::nGlfwWindow::GetWindowTitle() const
 	return Info.Title;
 }
 
-nbl::nEnumWindowBackend nbl::nGlfwWindow::GetType() const
-{
-	return nEnumWindowBackend::Glfw;
-}
-
 void* nbl::nGlfwWindow::GetProcAddressCallbackFunc() const
 {
 	return (void*)glfwGetProcAddress;
+}
+
+const nbl::nPlatformWindowCreateInfo& nbl::nGlfwWindow::GetInfo() const
+{
+	return Info;
 }
 
 bool nbl::nGlfwWindow::ShouldClose() const
@@ -67,10 +59,7 @@ bool nbl::nGlfwWindow::ShouldClose() const
 
 void nbl::nGlfwWindow::PollEvent() const
 {
-#ifdef ENABLE_WINDOW
 	glfwPollEvents();
-#endif 
-
 }
 
 void* nbl::nGlfwWindow::GetUserData() const

@@ -4,13 +4,11 @@
 #include <string>
 #include <Module/ModuleManager.h>
 
+//#include "RHI/RHI.h"
+
 namespace nbl
 {
-	enum class nEnumWindowBackend
-	{
-		Glfw,
-		Egl
-	};
+	enum class nEnumRenderBackend;
 
 	struct RENDER_API nPlatformWindowCreateInfo
 	{
@@ -22,9 +20,8 @@ namespace nbl
 		void* UserData = nullptr;
 		bool  bHideWindow = false;
 		bool  bResizable  = true;
-		bool  bOpenGLBackend = false;
 
-		nEnumWindowBackend BackendType;
+		nEnumRenderBackend RenderBackend;
 	};
 
 	class RENDER_API nPlatformWindow
@@ -40,10 +37,11 @@ namespace nbl
 		virtual int   GetH()	   const = 0;
 		virtual bool  IsValid()    const = 0;
 		 
-		virtual std::string			GetWindowTitle()	const = 0;
-		virtual nEnumWindowBackend  GetType()			const = 0;
+		virtual std::string	GetWindowTitle()	const = 0;
 
 		virtual void* GetProcAddressCallbackFunc()const = 0;
+
+		virtual const nPlatformWindowCreateInfo& GetInfo() const = 0;
 
 	public:
 		virtual bool ShouldClose()const = 0;
@@ -62,7 +60,8 @@ namespace nbl
 		bool  IsValid()    const;
 
 		std::string			GetWindowTitle()	const;
-		nEnumWindowBackend  GetType()			const;
+
+		const nPlatformWindowCreateInfo& GetInfo() const ;
 
 		void* GetProcAddressCallbackFunc()const;
 
