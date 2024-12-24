@@ -47,6 +47,9 @@ namespace nbl
 		uint32_t EngineVersion;
 		uint32_t VulkanVersion;
 
+		/*
+			这里可以
+		*/
 		nPlatformWindowAccessor PlatformWindow;
 
 		nEnumRenderBackend BackendType;

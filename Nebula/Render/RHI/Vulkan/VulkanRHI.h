@@ -1,4 +1,9 @@
 #pragma once
+/*
+	初始化Vulkan的步骤：
+	①配置需要用的Layer
+	②配置需要用到的Vulkan拓展特性
+*/
 #include "RHI/RHI.h"
 
 #include <vulkan/vulkan.h>

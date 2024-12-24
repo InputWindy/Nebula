@@ -70,6 +70,10 @@ namespace nbl
 		static inline std::map<std::string, std::unique_ptr<nIModule>> LoadedModules;
 	};
 
+
+	/*
+		为了避免跨模块直接访问裸指针导致的地址访问越界问题，用PtrAccessor包装一层，使得裸指针的函数实现始终在自己所在的模块内。
+	*/
 	template<typename T>
 	class CORE_API nModulePtrAccessor
 	{

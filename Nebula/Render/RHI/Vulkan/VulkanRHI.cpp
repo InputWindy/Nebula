@@ -41,6 +41,16 @@ nbl::nVulkanRHI::nVulkanRHI()
 
 nbl::nVulkanRHI::~nVulkanRHI()
 {
+	/*
+		卸载校验层
+	*/
+	if (Info.bEnableValidationLayers)
+	{
+		PFN_vkDestroyDebugUtilsMessengerEXT DestroyDebugUtilsMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(Instance, "vkDestroyDebugUtilsMessengerEXT");
+		if (DestroyDebugUtilsMessengerFunc != nullptr) 
+			DestroyDebugUtilsMessengerFunc(Instance, DebugMessenger, nullptr);
+		
+	}
 }
 
 nbl::nEnumRenderBackend nbl::nVulkanRHI::GetType() const
@@ -80,6 +90,9 @@ nbl::nEnumRHIInitResult nbl::nVulkanRHI::InitBackend(nbl::nRHICreateInfo* NewInf
 
 			std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
+			/*
+				这个validation layer需要用到vulkan的VK_EXT_debug_utils拓展
+			*/
 			if (Info.bEnableValidationLayers) 
 				extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 			
