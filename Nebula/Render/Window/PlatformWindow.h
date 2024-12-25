@@ -4,8 +4,6 @@
 #include <string>
 #include <Module/ModuleManager.h>
 
-//#include "RHI/RHI.h"
-
 namespace nbl
 {
 	enum class nEnumRenderBackend;
@@ -37,8 +35,6 @@ namespace nbl
 		virtual int   GetH()	   const = 0;
 		virtual bool  IsValid()    const = 0;
 		 
-		virtual std::string	GetWindowTitle()	const = 0;
-
 		virtual void* GetProcAddressCallbackFunc()const = 0;
 
 		virtual const nPlatformWindowCreateInfo& GetInfo() const = 0;
@@ -53,17 +49,17 @@ namespace nbl
 		GENERATED_PTR_ACCESSOR(nPlatformWindow)
 	public:
 
+#ifdef RENDER_EXPORTS
 		void* GetHandle()  const;
+		void* GetProcAddressCallbackFunc()const;
+#endif
+
 		void* GetUserData()const;
 		int   GetW()	   const;
 		int   GetH()	   const;
 		bool  IsValid()    const;
 
-		std::string			GetWindowTitle()	const;
-
 		const nPlatformWindowCreateInfo& GetInfo() const ;
-
-		void* GetProcAddressCallbackFunc()const;
 
 	public:
 		bool ShouldClose()const;

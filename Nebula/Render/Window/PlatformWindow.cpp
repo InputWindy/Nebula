@@ -35,10 +35,6 @@ bool nbl::nPlatformWindowAccessor::IsValid() const
     return Ptr&& Ptr->IsValid();
 }
 
-std::string nbl::nPlatformWindowAccessor::GetWindowTitle() const
-{
-    return Ptr?Ptr->GetWindowTitle():"";
-}
 
 const nbl::nPlatformWindowCreateInfo& nbl::nPlatformWindowAccessor::GetInfo() const
 {

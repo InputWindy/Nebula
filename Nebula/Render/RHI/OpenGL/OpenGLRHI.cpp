@@ -25,7 +25,9 @@ nbl::nEnumRHIInitResult nbl::nOpenGLRHI::InitBackend(nRHICreateInfo* NewInfo)
 		NewInfo->PlatformWindow.IsValid()
 		)
 	{
-		return gladLoadGLLoader((GLADloadproc)Info.PlatformWindow.GetProcAddressCallbackFunc()) ? nEnumRHIInitResult::Success : nEnumRHIInitResult::InvalidGetProcCallback;
+		auto Result = gladLoadGLLoader((GLADloadproc)Info.PlatformWindow.GetProcAddressCallbackFunc()) ? nEnumRHIInitResult::Success : nEnumRHIInitResult::InvalidGetProcCallback;
+
+		return Result;
 	}
 	else
 	{

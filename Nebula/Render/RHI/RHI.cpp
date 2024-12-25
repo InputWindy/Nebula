@@ -15,3 +15,10 @@ nbl::nEnumRHIInitResult nbl::nRHI::InitBackend(nRHICreateInfo* NewInfo)
 nbl::nRHI::~nRHI()
 {
 }
+
+//#include <glad/glad.h>
+
+void nbl::nRHIAccessor::ClearColor()
+{
+    //glClearColor(0, 0, 1, 1);
+}

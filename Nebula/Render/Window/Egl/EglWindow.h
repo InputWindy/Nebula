@@ -16,8 +16,6 @@ namespace nbl
 		virtual int   GetH()	   const override final;
 		virtual bool  IsValid()    const override final;
 
-		virtual std::string			GetWindowTitle()	const override final;
-
 		virtual void* GetProcAddressCallbackFunc()const override final;
 
 		virtual const nPlatformWindowCreateInfo& GetInfo() const override final;

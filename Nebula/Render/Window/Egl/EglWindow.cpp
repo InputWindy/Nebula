@@ -35,11 +35,6 @@ bool nbl::nEglWindow::IsValid() const
     return false;
 }
 
-std::string nbl::nEglWindow::GetWindowTitle() const
-{
-    return std::string();
-}
-
 void* nbl::nEglWindow::GetProcAddressCallbackFunc() const
 {
     return nullptr;

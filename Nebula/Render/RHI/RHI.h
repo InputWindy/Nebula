@@ -23,12 +23,9 @@ namespace nbl
 		Success,
 
 		EmptyCreateInfo,
-		InvalidGetProcCallback,
-		InvalidPlatformWindow ,
-		InavailableLayers 
+		InvalidPlatformWindow,
+		InvalidGetProcCallback
 	};
-
-	class nPlatformWindowAccessor;
 
 	struct RENDER_API nRHICreateInfo
 	{
@@ -36,32 +33,15 @@ namespace nbl
 		nRHICreateInfo(const nPlatformWindowAccessor& InPlatformWindow) :PlatformWindow(InPlatformWindow){};
 
 		nPlatformWindowAccessor PlatformWindow;
-	};
-
-	struct nVulkanCreateInfo :public nRHICreateInfo
-	{
-		nVulkanCreateInfo() {};
-		nVulkanCreateInfo(const nPlatformWindowAccessor& InPlatformWindow) :nRHICreateInfo(InPlatformWindow) {};
-
-		/*
-			ÊµÀý²ã
-		*/
-		std::vector<const char*> AppLayers = { "VK_LAYER_KHRONOS_validation" };
 
 #ifdef NDEBUG
-		bool bEnableValidationLayers = false;
+		bool bEnableValidationLayer = false;
 #else
-		bool bEnableValidationLayers = true;
+		bool bEnableValidationLayer = true;
 #endif 
 
-		uint32_t VulkanVersion;/* = VK_API_VERSION_1_0;*/
 	};
 
-	struct nOpenGLCreateInfo :public nRHICreateInfo
-	{
-		nOpenGLCreateInfo() {};
-		nOpenGLCreateInfo(const nPlatformWindowAccessor& InPlatformWindow) :nRHICreateInfo(InPlatformWindow) {};
-	};
 
 	class RENDER_API nRHI
 	{
@@ -81,5 +61,7 @@ namespace nbl
 	struct RENDER_API nRHIAccessor final :public nModulePtrAccessor<nRHI>
 	{
 		GENERATED_PTR_ACCESSOR(nRHI)
+
+		void ClearColor();
 	};
 }

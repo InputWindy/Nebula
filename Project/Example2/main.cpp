@@ -1,6 +1,5 @@
 #include <Nebula.h>
 
-#define VULKAN_BACKEND
 
 struct Example2App :public nbl::nIApp
 {
@@ -13,37 +12,25 @@ public:
 	void Run() override final
 	{
 		auto& RenderModule = nbl::nModuleManager::Get().LoadModule<nbl::nRenderModule>();
-		nbl::nPlatformWindowCreateInfo Info;
-		Info.bHideWindow = false;
+	
+		nbl::nRenderModuleCreateInfo Info;
+		Info.SurfaceType = nbl::nEnumSurfaceType::Windowed;
 		Info.bResizable = true;
-		Info.H = 600;
 		Info.W = 800;
+		Info.H = 600;
 		Info.Title = "Example2";
+		Info.FeatureLevel = nbl::nEnumRenderFeatureLevel::Default;
 		Info.UserData = this;
 
-#ifdef VULKAN_BACKEND
-		Info.RenderBackend = nbl::nEnumRenderBackend::Vulkan;
-#else
-		Info.RenderBackend = nbl::nEnumRenderBackend::OpenGL;
-#endif
-		
-		if (RenderModule.CreatePlatformWindow(Info))
+		if (RenderModule.Init(Info))
 		{
 			nbl::nPlatformWindowAccessor Window = RenderModule.GetPlatformWindowChecked();
+			nbl::nRHIAccessor RHI = RenderModule.GetRHIChecked();
 
-#ifdef VULKAN_BACKEND
-			nbl::nVulkanCreateInfo CreateInfo(Window);
-#else
-			nbl::nRHICreateInfo CreateInfo(Window);
-#endif
-			
-			if (RenderModule.CreateRHI(&CreateInfo))
-			{
-				std::cout << "ok" << std::endl;
-			}
-			
 			while (!Window.ShouldClose())
 			{
+				RHI.ClearColor();
+
 				Window.PollEvent();
 			}
 		};

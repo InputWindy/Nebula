@@ -37,11 +37,6 @@ bool nbl::nGlfwWindow::IsValid() const
 	return Handle;
 }
 
-std::string nbl::nGlfwWindow::GetWindowTitle() const
-{
-	return Info.Title;
-}
-
 void* nbl::nGlfwWindow::GetProcAddressCallbackFunc() const
 {
 	return (void*)glfwGetProcAddress;

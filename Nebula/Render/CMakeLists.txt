@@ -57,10 +57,11 @@ endif()
 if(NOT TARGET Vulkan)
     include_directories(${Vulkan_INCLUDE_DIRS})
 
-    find_package(Vulkan REQUIRED FATAL_ERROR)
+    find_package(Vulkan REQUIRED)
 
     list(APPEND TARGET_LINKS ${Vulkan_LIBRARIES})
     list(APPEND TARGET_INCLUDES ${Vulkan_INCLUDE_DIRS})
+    add_compile_definitions(NBL_VK_ENABLED)
 
     message(STATUS "Vulkan_LIBRARIES: ${Vulkan_LIBRARIES}")
 

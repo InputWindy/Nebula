@@ -27,7 +27,7 @@ target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${REQUIRED_IN
 #add_compile_definitions(${REQUIRED_MOUDLE_NAME})
 target_compile_definitions(Core PRIVATE CORE_EXPORTS)
 
-add_compile_definitions(${REQUIRED_MODULES})
+#add_compile_definitions(${REQUIRED_MODULES})
 
 set(TARGET_LINKS)
 set(TARGET_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
