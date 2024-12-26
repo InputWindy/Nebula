@@ -17,17 +17,17 @@ namespace nbl
 	{
 		OffScreen,	/*no window*/
 		Windowed,	/*window*/
-		MultiView	/*vr*/
 	};
 
 	/*
-		有vulkan用vulkan，没vulkan用opengles做fallback
+		有vulkan用vulkan，没vulkan用opengl做fallback
 	*/
 	enum class nEnumRenderFeatureLevel
 	{
-		Default,	/*opengles 4.6 or vulkan 3.0 for PC*/
-		RT,			/*vulkan 3.0 with ray-tracing extension for PC*/
-		Mobile		/*vulkan 1.0 or opengles < 4.6*/
+		GraphicOnly,		/*opengl < 4.3 or Vk > 1.0.0*/
+		GraphicAndCompute,	/*opengl >= 4.3 or Vk > 1.0.0*/
+		PC,					/*opengl 4.6 or Vk 1.0.3*/
+		Mobile				/*opengl < 4.3 or Vk 1.0.0*/
 	};
 
 	struct RENDER_API nRenderModuleCreateInfo

@@ -19,7 +19,7 @@ public:
 		Info.W = 800;
 		Info.H = 600;
 		Info.Title = "Example2";
-		Info.FeatureLevel = nbl::nEnumRenderFeatureLevel::Default;
+		Info.FeatureLevel = nbl::nEnumRenderFeatureLevel::PC;
 		Info.UserData = this;
 
 		if (RenderModule.Init(Info))

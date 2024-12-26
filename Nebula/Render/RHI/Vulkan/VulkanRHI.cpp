@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "RHI/RHI.h"
+#include "RenderCore.h"
 
 #include <GLFW/glfw3.h>
 #include <optional>
@@ -13,16 +14,6 @@
 #include <map>
 #include <set>
 
-struct QueueFamilyIndices
-{
-	std::optional<uint32_t> graphicsFamily;
-	std::optional<uint32_t> presentFamily;
-
-	bool isComplete() 
-	{
-		return graphicsFamily.has_value() && presentFamily.has_value();
-	}
-};
 
 struct SwapChainSupportDetails 
 {
@@ -58,26 +49,362 @@ nbl::nEnumRenderBackend nbl::nVulkanRHI::GetType() const
 	return nEnumRenderBackend::Vulkan;
 }
 
-nbl::nEnumRHIInitResult nbl::nVulkanRHI::InitBackend(nRHICreateInfo*NewInfo)
-{
-	if (
-		nRHI::InitBackend(NewInfo) == nEnumRHIInitResult::Success &&
-		NewInfo->PlatformWindow.IsValid()
-		)
-	{
-		return nEnumRHIInitResult::Success;
-	}
-	else
-	{
-		return nEnumRHIInitResult::InvalidPlatformWindow;
-	}
-}
-
-static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) 
+static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 {
 	std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
 	return VK_FALSE;
+}
+
+VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) 
+{
+	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+	if (func != nullptr) {
+		return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+	}
+	else {
+		return VK_ERROR_EXTENSION_NOT_PRESENT;
+	}
+}
+
+void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) 
+{
+	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	if (func != nullptr) {
+		func(instance, debugMessenger, pAllocator);
+	}
+}
+
+void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+	createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+	createInfo.pfnUserCallback = DebugCallback;
+}
+
+bool CheckInstanceLayerSupport(const std::vector<const char*>& validationLayers)
+{
+	uint32_t layerCount;
+	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+	std::vector<VkLayerProperties> availableLayers(layerCount);
+	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+	for (const char* layerName : validationLayers) {
+		bool layerFound = false;
+
+		for (const auto& layerProperties : availableLayers) {
+			if (strcmp(layerName, layerProperties.layerName) == 0) {
+				layerFound = true;
+				break;
+			}
+		}
+
+		if (!layerFound) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+std::vector<const char*> GetSurfaceRequiredInstanceExtensions() 
+{
+	uint32_t glfwExtensionCount = 0;
+	const char** glfwExtensions;
+	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+	return extensions;
+}
+
+bool CheckDeviceExtensionSupport(VkPhysicalDevice device,const std::vector<const char*>& deviceExtensions)
+{
+	uint32_t extensionCount;
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+	std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+	std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+	for (const auto& extension : availableExtensions) 
+	{
+		requiredExtensions.erase(extension.extensionName);
+	}
+
+	return requiredExtensions.empty();
+}
+
+SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device,VkSurfaceKHR surface) 
+{
+	SwapChainSupportDetails details;
+
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+
+	uint32_t formatCount;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+
+	if (formatCount != 0) {
+		details.formats.resize(formatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+	}
+
+	uint32_t presentModeCount;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+
+	if (presentModeCount != 0) {
+		details.presentModes.resize(presentModeCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
+	}
+
+	return details;
+}
+
+nbl::nEnumRHIInitResult nbl::nVulkanRHI::InitBackend(nRHICreateInfo*NewInfo)
+{
+	nbl::nEnumRHIInitResult Result = nRHI::InitBackend(NewInfo);
+
+	if (Result != nEnumRHIInitResult::Success)return Result;
+
+#pragma region 整理需要的硬件特性
+	/*
+		实例级Layer、Ext + 设备级Ext
+	*/
+	std::vector<const char*> InstanceLayers;
+	std::vector<const char*> InstanceEXTs;
+	std::vector<const char*> DeviceEXTs;
+
+	// 开启校验层和校验层需要的实例级拓展
+	if (NewInfo->bEnableValidationLayer)
+	{
+		InstanceLayers.push_back("VK_LAYER_KHRONOS_validation");
+		InstanceEXTs.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	}
+
+	bool bNeedPresent = false;
+	bool bNeedGraphic = false;
+	bool bNeedCompute = false;
+
+	// 判断是否要开启Surface拓展
+	switch (NewInfo->SurfaceType)
+	{
+	case nbl::nEnumSurfaceType::OffScreen:
+	{
+		bNeedPresent = false;
+		break;
+	}
+	case nbl::nEnumSurfaceType::Windowed:
+	{
+		for (const char* Ext : GetSurfaceRequiredInstanceExtensions())
+		{
+			InstanceEXTs.push_back(Ext);
+		}
+
+		DeviceEXTs.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+		bNeedPresent = true;
+
+		break;
+	}
+	default:
+		break;
+	}
+#pragma endregion
+
+	/*
+		检查硬件Vulkan sdk是否支持实例层
+	*/
+	if(!CheckInstanceLayerSupport(InstanceLayers))
+		return nEnumRHIInitResult::UnavailableLayers;
+	else
+	{
+		/*
+			创建Vk实例
+		*/
+		VkInstanceCreateInfo InstanceCreateInfo;
+		{
+			VkApplicationInfo AppInfo{};
+			AppInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+			AppInfo.pApplicationName = NewInfo->AppName.c_str();
+			AppInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+			AppInfo.pEngineName = "No Engine";
+			AppInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+
+			switch (NewInfo->FeatureLevel)
+			{
+			case nbl::nEnumRenderFeatureLevel::GraphicOnly:
+			{
+				AppInfo.apiVersion = VK_API_VERSION_1_0;
+				bNeedGraphic = true;
+				break;
+			}
+			case nbl::nEnumRenderFeatureLevel::GraphicAndCompute:
+			{
+				AppInfo.apiVersion = VK_API_VERSION_1_0;
+				bNeedGraphic = true;
+				bNeedCompute = true;
+				break;
+			}
+			case nbl::nEnumRenderFeatureLevel::PC:
+			{
+				AppInfo.apiVersion = VK_API_VERSION_1_3;
+				bNeedGraphic = true;
+				bNeedCompute = true;
+				break;
+			}
+			case nbl::nEnumRenderFeatureLevel::Mobile:
+			{
+				AppInfo.apiVersion = VK_API_VERSION_1_0;
+				bNeedGraphic = true;
+				bNeedCompute = true;
+				break;
+			}
+			default:
+				break;
+			}
+
+			InstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+			InstanceCreateInfo.pApplicationInfo = &AppInfo;
+			InstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(InstanceEXTs.size());
+			InstanceCreateInfo.ppEnabledExtensionNames = InstanceEXTs.data();
+
+			InstanceCreateInfo.enabledLayerCount = 0;
+			InstanceCreateInfo.pNext = nullptr;
+
+			if (NewInfo->bEnableValidationLayer) 
+			{
+				VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
+				InstanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(InstanceLayers.size());
+				InstanceCreateInfo.ppEnabledLayerNames = InstanceLayers.data();
+
+				PopulateDebugMessengerCreateInfo(debugCreateInfo);
+				InstanceCreateInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
+			}
+		}
+
+		if (vkCreateInstance(&InstanceCreateInfo, nullptr, &Instance) != VK_SUCCESS) 
+			return nEnumRHIInitResult::InvalidVkInstance;
+		else
+		{
+			/*
+				创建实例成功后
+			*/
+			if (NewInfo->bEnableValidationLayer)
+			{
+				VkDebugUtilsMessengerCreateInfoEXT createInfo;
+				PopulateDebugMessengerCreateInfo(createInfo);
+
+				if (CreateDebugUtilsMessengerEXT(Instance, &createInfo, nullptr, &DebugMessenger) != VK_SUCCESS) 
+					return nEnumRHIInitResult::InvalidDebugUtils;
+			}
+
+			/*
+				创建surface,需要呈现到窗口上，就必须要有surface
+			*/
+			if (bNeedPresent)
+			{
+				if (glfwCreateWindowSurface(Instance, (GLFWwindow*)(NewInfo->PlatformWindow.GetHandle()), nullptr, &Surface) != VK_SUCCESS)
+					return nEnumRHIInitResult::InvalidSurface;
+			}
+
+			/*
+				获取物理设备
+			*/
+			{
+				uint32_t deviceCount = 0;
+				vkEnumeratePhysicalDevices(Instance, &deviceCount, nullptr);
+
+				if (deviceCount == 0)
+					return nEnumRHIInitResult::NoSuitableGPU;
+				else
+				{
+					std::vector<VkPhysicalDevice> devices(deviceCount);
+					vkEnumeratePhysicalDevices(Instance, &deviceCount, devices.data());
+
+					/*
+						查询所有可用的物理设备
+					*/
+					for (const auto& device : devices) 
+					{
+						if (CheckDeviceExtensionSupport(device, DeviceEXTs))
+						{
+							/*
+								检查是否支持Compute shader并行计算
+							*/
+							uint32_t queueFamilyCount = 0;
+							vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+							std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+							vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+							bool bSuitable = false;
+
+							std::optional<uint32_t> graphicsFamily;
+							std::optional<uint32_t> presentFamily;
+							std::optional<uint32_t> computeFamily;
+
+							for (int i = 0; i < queueFamilies.size(); ++i)
+							{
+								VkQueueFamilyProperties& queueFamily = queueFamilies[i];
+
+								if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+									graphicsFamily = i;
+
+								if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
+									computeFamily = i;
+
+
+								VkBool32 presentSupport = false;
+								vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Surface, &presentSupport);
+
+								if (presentSupport)
+								{
+									/*
+										还要检查呈现模式是否匹配
+									*/
+									SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device, Surface);
+
+									if (!swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty())
+										presentFamily = i;
+								}
+
+								bSuitable = true;
+								bSuitable &= bNeedGraphic ? graphicsFamily.has_value() : true;
+								bSuitable &= bNeedCompute ? computeFamily.has_value() : true;
+								bSuitable &= bNeedPresent ? presentFamily.has_value() : true;
+
+								if (bSuitable)
+									break;
+									
+							};
+
+							if (bSuitable)
+								SuitablePhysicalDevices.push_back(device);
+						}
+					}
+
+					/*
+						取一个可用的物理设备
+					*/
+					if (SuitablePhysicalDevices.size())
+						PhysicalDevice = SuitablePhysicalDevices[0];
+
+					if (PhysicalDevice == VK_NULL_HANDLE) 
+						return nEnumRHIInitResult::NoSuitableGPU;
+				}
+
+				
+			}
+
+
+		}
+	}
+
+
+	return nEnumRHIInitResult::Success;
 }
 
 extern "C" const char** glfwGetRequiredInstanceExtensions(uint32_t*);

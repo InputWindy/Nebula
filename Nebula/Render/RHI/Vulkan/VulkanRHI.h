@@ -39,6 +39,8 @@ namespace nbl
 
 		std::vector<VkPhysicalDevice> PhysicalDevices;
 
+		std::vector<VkPhysicalDevice> SuitablePhysicalDevices;
+
 		VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
 		VkDevice LogicDevice;
 

@@ -9,7 +9,7 @@ nbl::nEnumRHIInitResult nbl::nRHI::InitBackend(nRHICreateInfo* NewInfo)
     if (!NewInfo)return nEnumRHIInitResult::EmptyCreateInfo;
 
     Info = *NewInfo;
-    return nEnumRHIInitResult::Success;
+    return NewInfo->PlatformWindow.IsValid() ? nbl::nEnumRHIInitResult::Success : nbl::nEnumRHIInitResult::InvalidPlatformWindow;
 }
 
 nbl::nRHI::~nRHI()

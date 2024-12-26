@@ -69,22 +69,28 @@ namespace nbl
 #endif
 
 		nRHICreateInfo RHIInfo(GetPlatformWindow());
+		RHIInfo.FeatureLevel = NewInfo.FeatureLevel;
+		RHIInfo.SurfaceType = NewInfo.SurfaceType;
+		RHIInfo.AppName = NewInfo.Title;
+		RHIInfo.W = NewInfo.W;
+		RHIInfo.H = NewInfo.H;
 
 		switch (RHIInfo.PlatformWindow.GetInfo().RenderBackend)
 		{
 		case nbl::nEnumRenderBackend::Vulkan:
 		{
 			nVulkanRHI* RHI = new nVulkanRHI();
-			assert( RHI->InitBackend(&RHIInfo) == nEnumRHIInitResult::Success);
+			if (RHI->InitBackend(&RHIInfo) != nEnumRHIInitResult::Success)
+				return false;
 
 			RenderInterface.reset(RHI);
-			
 			break;
 		}
 		case nbl::nEnumRenderBackend::OpenGL:
 		{
 			nOpenGLRHI* RHI = new nOpenGLRHI();
-			assert(RHI->InitBackend(&RHIInfo) == nEnumRHIInitResult::Success);
+			if (RHI->InitBackend(&RHIInfo) != nEnumRHIInitResult::Success)
+				return false;
 
 			RenderInterface.reset(RHI);
 			break;

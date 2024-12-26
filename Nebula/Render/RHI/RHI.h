@@ -24,8 +24,16 @@ namespace nbl
 
 		EmptyCreateInfo,
 		InvalidPlatformWindow,
-		InvalidGetProcCallback
+		InvalidGetProcCallback,
+		UnavailableLayers,
+		InvalidVkInstance,
+		InvalidDebugUtils,
+		InvalidSurface,
+		NoSuitableGPU
 	};
+
+	enum class nEnumRenderFeatureLevel;
+	enum class nEnumSurfaceType;
 
 	struct RENDER_API nRHICreateInfo
 	{
@@ -39,7 +47,12 @@ namespace nbl
 #else
 		bool bEnableValidationLayer = true;
 #endif 
+		nEnumRenderFeatureLevel FeatureLevel;
+		nEnumSurfaceType SurfaceType;
 
+		std::string AppName;
+		int W = 0;
+		int H = 0;
 	};
 
 
