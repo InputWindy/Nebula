@@ -25,6 +25,7 @@ namespace nbl
 	enum class nEnumRenderFeatureLevel
 	{
 		GraphicOnly,		/*opengl < 4.3 or Vk > 1.0.0*/
+		ComputeOnly,		/*opengl < 4.3 or Vk > 1.0.0*/
 		GraphicAndCompute,	/*opengl >= 4.3 or Vk > 1.0.0*/
 		PC,					/*opengl 4.6 or Vk 1.0.3*/
 		Mobile				/*opengl < 4.3 or Vk 1.0.0*/

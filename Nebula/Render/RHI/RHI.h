@@ -27,9 +27,11 @@ namespace nbl
 		InvalidGetProcCallback,
 		UnavailableLayers,
 		InvalidVkInstance,
-		InvalidDebugUtils,
 		InvalidSurface,
-		NoSuitableGPU
+		NoSuitableGPU,
+		InvalidLogicDevice,
+		InvalidSwapChain,
+		InvalidImageViews
 	};
 
 	enum class nEnumRenderFeatureLevel;
