@@ -52,15 +52,16 @@ namespace nbl
 		nEnumRenderFeatureLevel FeatureLevel;
 		nEnumSurfaceType SurfaceType;
 
-		std::string AppName;
-		int W = 0;
-		int H = 0;
+		std::string AppName = "";
+		int W = 800;
+		int H = 600;
 	};
 
 
 	class RENDER_API nRHI
 	{
 		friend class nRenderModule;
+		friend class nPlatformWindow;
 	protected:
 		nRHI();
 
@@ -68,7 +69,33 @@ namespace nbl
 	public:
 		virtual ~nRHI();
 
+		/*
+			rhi backend type
+		*/
 		virtual nEnumRenderBackend GetType()const = 0;
+
+		/*
+			support display on the screen
+		*/
+		virtual bool IsDisplaySupported()const;
+
+		/*
+			support hardware render pipeline
+		*/
+		virtual bool IsGraphicSupported()const;
+
+		/*
+			support compute shader
+		*/
+		virtual bool IsComputeSupported()const;
+
+		/*
+			support feature level
+		*/
+		virtual bool IsValid()const;
+		
+	public:
+		const auto& GetCreateInfo()			const;
 	protected:
 		nRHICreateInfo Info;
 	};

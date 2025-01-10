@@ -10,9 +10,18 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 namespace nbl
 {
+
+	struct SwapChainSupportDetails
+	{
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+	};
+
 	typedef VKAPI_ATTR VkBool32(*VkDebugCallback)(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, const VkDebugUtilsMessengerCallbackDataEXT*, void*);
 
 	class RENDER_API nVulkanRHI:public nRHI
@@ -26,12 +35,21 @@ namespace nbl
 		virtual nEnumRHIInitResult InitBackend(nRHICreateInfo*) override final;
 	
 	public:
-		const auto& GetCreateInfo()			const;
-		const auto& GetAvailableLayers()	const;
 
+		virtual bool IsDisplaySupported()const override;
+		virtual bool IsGraphicSupported()const override;
+		virtual bool IsComputeSupported()const override;
+		virtual bool IsValid()const override;
+
+
+	public:
+		VkResult RegenerateSwapChain();
+		const auto& GetAvailableLayers()	const;
 		bool IsSupportedLayer(const std::vector<const char*>&)const;
+
 	private:
 		std::vector<VkLayerProperties> AvailableLayers;
+
 	private:
 		/*
 			实例级Layer、Ext + 设备级Ext
@@ -51,32 +69,50 @@ namespace nbl
 		bool bNeedGraphic = false;
 		bool bNeedCompute = false;
 
+		/*
+			填充以上字段内容
+		*/
 		void PopulateRequirements();
 
 	private:
+		// 必须项
 		VkInstance Instance = VK_NULL_HANDLE;
 
-		// 这个是可选项
+		// 可选项（是否需要Debug）
 		VkDebugUtilsMessengerEXT DebugMessenger;
 
+		// 可选项（是否是窗口应用程序）
+		VkSurfaceKHR Surface = VK_NULL_HANDLE;
+
+		/*
+			创建销毁上述资源
+		*/
 		VkResult CreateInsatnce();
 		void DestroyInstance();
 	private:
 
-		// 符合应用程序特性要求的物理设备
+		// 查询支持应用程序特性要求的物理设备
 		std::vector<VkPhysicalDevice> SuitablePhysicalDevices;
 		VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
 
+		/*
+			填充上述字段
+		*/
 		void PopulatePhysicalDevice();
 
 	private:
-
 
 #pragma region 逻辑GPU
 		VkDevice LogicDevice = VK_NULL_HANDLE;
 
 		VkQueue GraphicsQueue = VK_NULL_HANDLE;
 		VkQueue ComputeQueue = VK_NULL_HANDLE;
+		VkQueue PresentQueue = VK_NULL_HANDLE;
+
+		std::optional<uint32_t> computeFamily;
+		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> presentFamily;
+
 #pragma endregion
 
 		VkResult CreateLogicDevice();
@@ -84,29 +120,15 @@ namespace nbl
 
 	private:
 
-
-#pragma region 窗口应用程序相关
-
-		// 窗口显示命令队列
-		VkQueue PresentQueue;
-
-		// 窗口抽象
-		VkSurfaceKHR Surface;
+		VkExtent2D SwapChainExtent;/*运行时改变*/
 
 		// 窗口交换链（n缓冲）
-		VkSwapchainKHR SwapChain;
+		VkSwapchainKHR SwapChain = VK_NULL_HANDLE;
 
 		// n缓冲对应的n张vk image
 		std::vector<VkImage> SwapChainImages;
-
-		// n缓冲image对应的操作句柄（用于和framebuffer做交互）
 		std::vector<VkImageView> SwapChainImageViews;
 
-		// 窗口显示
-		VkFormat SwapChainImageFormat;
-		VkExtent2D SwapChainExtent;
-
-#pragma endregion
-
+		void DestroySwapChain();
 	};
 }

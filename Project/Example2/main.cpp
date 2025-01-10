@@ -29,7 +29,7 @@ public:
 
 			while (!Window.ShouldClose())
 			{
-				RHI.ClearColor();
+				//RHI.ClearColor();
 
 				Window.PollEvent();
 			}
